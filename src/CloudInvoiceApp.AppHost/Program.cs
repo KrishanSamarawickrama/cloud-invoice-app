@@ -6,7 +6,6 @@ var postgres = builder.AddPostgres("postgres")
 
 if (builder.ExecutionContext.IsRunMode)
 {
-    // Data volumes don't work on ACA for Postgres so only add when running
     postgres.WithDataVolume();
 }
 

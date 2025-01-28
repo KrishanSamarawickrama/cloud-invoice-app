@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudInvoiceApp.AppHost", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudInvoiceApp.ServiceDefaults", "CloudInvoiceApp.ServiceDefaults\CloudInvoiceApp.ServiceDefaults.csproj", "{62E45017-6238-49F8-A413-669DB6D6B553}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudInvoiceApp.Backend", "..\CloudInvoiceApp.Backend\CloudInvoiceApp.Backend.csproj", "{6B900F2D-C3B1-47D3-9B34-7122F58E30A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudInvoiceApp.Backend", "CloudInvoiceApp.Backend\CloudInvoiceApp.Backend.csproj", "{6B900F2D-C3B1-47D3-9B34-7122F58E30A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CloudInvoiceApp.Backend\CloudInvoiceApp.Backend.csproj" />
+    <ProjectReference Include="..\CloudInvoiceApp.Backend\CloudInvoiceApp.Backend.csproj" />
   </ItemGroup>
 
 </Project>
