@@ -1,5 +1,7 @@
 using CloudInvoiceApp.Backend.Data;
 using Microsoft.EntityFrameworkCore;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +13,7 @@ builder.AddNpgsqlDbContext<InvoiceDbContext>("invoice-db", null,
 
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddFastEndpoints().SwaggerDocument();
 
 var app = builder.Build();
 
@@ -19,16 +21,13 @@ app.MapDefaultEndpoints();
 
 app.UseDeveloperExceptionPage();
 app.MapOpenApi();
-app.UseSwagger();
-app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-// Add a test endpoint.
-app.MapGet("/api/test", () => Results.Ok(new { Message = "API is working!" }));
-
-
 RunMigrations(app.Services);
+
+app.MapGet("/api/version", () => Results.Ok(new { Version = "v1.0.0", Tag = "20250128" }));
+app.UseFastEndpoints().UseSwaggerGen();
 
 app.Run();
 
@@ -39,4 +38,6 @@ void RunMigrations(IServiceProvider serviceProvider)
 
     var dbContext = services.GetRequiredService<InvoiceDbContext>();
     dbContext.Database.Migrate();
+    
+    DatabaseSeeder.SeedAsync(dbContext).Wait();
 }

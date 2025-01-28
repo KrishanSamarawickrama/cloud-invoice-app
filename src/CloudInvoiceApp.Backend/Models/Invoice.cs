@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CloudInvoiceApp.Backend.Models;
 
 public sealed class Invoice
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public string? FileName { get; set; }
     public required string InvoiceNumber { get; set; } = " 00-000000";
