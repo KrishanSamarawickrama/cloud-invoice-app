@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudInvoiceApp.AppHost", "CloudInvoiceApp.AppHost\CloudInvoiceApp.AppHost.csproj", "{8A92F887-0C8C-4364-AE7A-E02755CF9195}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudInvoiceApp.ServiceDefaults", "CloudInvoiceApp.ServiceDefaults\CloudInvoiceApp.ServiceDefaults.csproj", "{62E45017-6238-49F8-A413-669DB6D6B553}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudInvoiceApp.Backend", "CloudInvoiceApp.Backend\CloudInvoiceApp.Backend.csproj", "{6B900F2D-C3B1-47D3-9B34-7122F58E30A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A92F887-0C8C-4364-AE7A-E02755CF9195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A92F887-0C8C-4364-AE7A-E02755CF9195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A92F887-0C8C-4364-AE7A-E02755CF9195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A92F887-0C8C-4364-AE7A-E02755CF9195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62E45017-6238-49F8-A413-669DB6D6B553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62E45017-6238-49F8-A413-669DB6D6B553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62E45017-6238-49F8-A413-669DB6D6B553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62E45017-6238-49F8-A413-669DB6D6B553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B900F2D-C3B1-47D3-9B34-7122F58E30A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B900F2D-C3B1-47D3-9B34-7122F58E30A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B900F2D-C3B1-47D3-9B34-7122F58E30A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B900F2D-C3B1-47D3-9B34-7122F58E30A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
