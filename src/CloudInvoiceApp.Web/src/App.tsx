@@ -7,13 +7,15 @@ import Sidebar from './components/Sidebar';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen min-w-screen bg-gradient-to-br from-gray-100 to-white flex">
+      <div className="min-h-screen min-w-screen bg-[#EFE9D5] flex">
         <Sidebar />
-        <main className="flex-1 p-6">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/invoices" element={<InvoiceList />} />
-          </Routes>
+        <main className="flex-1 p-8">
+          <div className="bg-white/50 backdrop-blur-sm rounded-2xl shadow-lg p-6">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/invoices" element={<InvoiceList />} />
+            </Routes>
+          </div>
         </main>
       </div>
     </Router>

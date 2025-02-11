@@ -34,22 +34,31 @@ const InvoiceList = () => {
   if (error) return <div className="p-4 text-red-600">Error: {error}</div>;
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-          Invoices
-        </h1>
-        <div style={{ height: 400, width: '100%' }} className="rounded-lg overflow-hidden">
-          <DataGrid
-            rows={invoices}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
-            disableSelectionOnClick
-            autoHeight
-          />
-        </div>
+    <div className="container mx-auto">
+      <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-[#27445D] to-[#497D74] bg-clip-text text-transparent">
+        Invoices
+      </h1>
+      <div className="rounded-lg overflow-hidden border border-[#71BBB2]/20">
+        <DataGrid
+          rows={invoices}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5, 10, 20]}
+          checkboxSelection
+          disableSelectionOnClick
+          autoHeight
+          sx={{
+            backgroundColor: 'white',
+            border: 'none',
+            '& .MuiDataGrid-columnHeader': {
+              backgroundColor: '#27445D',
+              color: 'white'
+            },
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: '#EFE9D5'
+            }
+          }}
+        />
       </div>
     </div>
   );
