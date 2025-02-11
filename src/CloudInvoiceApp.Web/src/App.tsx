@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import InvoiceList from './components/InvoiceList';
 import Sidebar from './components/Sidebar';
+import EditInvoice from './components/EditInvoice';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/invoices" element={<InvoiceList />} />
+              <Route path="/invoices/edit/:id" element={<EditInvoice />} />
             </Routes>
           </div>
         </main>

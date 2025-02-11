@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import { Link } from 'react-router-dom';
 
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState([]);
@@ -25,7 +26,19 @@ const InvoiceList = () => {
   }, []);
 
   const columns = [
-    { field: 'invoiceNumber', headerName: 'Invoice Number', width: 150 },
+    { 
+      field: 'invoiceNumber', 
+      headerName: 'Invoice Number', 
+      width: 150,
+      renderCell: (params) => (
+        <Link 
+          to={`/invoices/edit/${params.row.id}`}
+          className="text-blue-600 hover:text-blue-800"
+        >
+          {params.value}
+        </Link>
+      )
+    },
     { field: 'invoiceDate', headerName: 'Invoice Date', width: 150 },
     { field: 'fileName', headerName: 'File Name', width: 200 },
   ];
