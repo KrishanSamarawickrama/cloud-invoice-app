@@ -76,15 +76,15 @@ const EditInvoice = () => {
   if (!invoice) return <div className="p-4">Invoice not found</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-[#27445D] to-[#497D74] bg-clip-text text-transparent">
+    <div className="container mx-auto bg-white p-4">
+      <h1 className="text-3xl font-bold mb-6 text-purple-500">
         Edit Invoice
       </h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Invoice Details */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Invoice Number</label>
+            <label className="block text-sm font-medium text-gray-900">Invoice Number</label>
             <input
               type="text"
               value={invoice?.invoiceNumber}
@@ -93,7 +93,7 @@ const EditInvoice = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Invoice Date</label>
+            <label className="block text-sm font-medium text-gray-900">Invoice Date</label>
             <input
               type="date"
               value={invoice?.invoiceDate?.split('T')[0]}
@@ -145,7 +145,7 @@ const EditInvoice = () => {
           <div className="grid grid-cols-2 gap-4">
             {Object.entries(bankDetails).map(([key, value]) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-gray-700">{key}</label>
+                <label className="block text-sm font-medium text-gray-900">{key}</label>
                 <input
                   type="text"
                   value={value}
