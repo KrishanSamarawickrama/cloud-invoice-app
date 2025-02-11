@@ -67,6 +67,10 @@ const EditInvoice = () => {
     { field: 'Amount', headerName: 'Amount', width: 150, editable: true, type: 'number' },
   ];
 
+  const calculateTotal = () => {
+    return services.reduce((sum, service) => sum + (Number(service.Amount) || 0), 0);
+  };
+
   if (loading) return <div className="p-4">Loading...</div>;
   if (error) return <div className="p-4 text-red-600">Error: {error}</div>;
   if (!invoice) return <div className="p-4">Invoice not found</div>;
@@ -171,6 +175,12 @@ const EditInvoice = () => {
                 setServices(updatedServices);
               }}
             />
+          </div>
+          <div className="mt-4 text-right">
+            <div className="inline-block bg-gray-100 px-6 py-3 rounded-lg">
+              <span className="text-gray-700 font-medium">Total: </span>
+              <span className="text-lg font-bold">${calculateTotal().toFixed(2)}</span>
+            </div>
           </div>
         </div>
 
