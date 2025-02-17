@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { API_URL } from '../config';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TextField } from '@mui/material';
 
 const EditInvoice = () => {
   const { id } = useParams();
@@ -95,11 +97,11 @@ const EditInvoice = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-900">Invoice Date</label>
-            <input
-              type="date"
-              value={invoice?.invoiceDate?.split('T')[0]}
-              onChange={(e) => setInvoice({ ...invoice, invoiceDate: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            {/* Replace input with DatePicker */}
+            <DatePicker
+              value={invoice?.invoiceDate ? new Date(invoice.invoiceDate) : null}
+              onChange={(date) => setInvoice({ ...invoice, invoiceDate: date ? date.toISOString() : '' })}
+              renderInput={(params) => <TextField {...params} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />}
             />
           </div>
         </div>
