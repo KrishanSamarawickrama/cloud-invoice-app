@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
+import { API_URL } from '../config';
 
 const EditInvoice = () => {
   const { id } = useParams();
@@ -14,7 +15,7 @@ const EditInvoice = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5101/api/invoices/${id}`)
+    fetch(`${API_URL}/api/invoices/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
         return res.json();
@@ -47,7 +48,7 @@ const EditInvoice = () => {
         services: JSON.stringify(services.map(({ id, ...service }) => service))
       };
 
-      const response = await fetch(`http://localhost:5101/api/invoices/${id}`, {
+      const response = await fetch(`${API_URL}/api/invoices/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

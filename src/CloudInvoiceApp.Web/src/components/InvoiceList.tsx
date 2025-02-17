@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config';
 
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState([]);
@@ -8,7 +9,7 @@ const InvoiceList = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5101/api/invoices')
+    fetch(`${API_URL}/api/invoices`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
