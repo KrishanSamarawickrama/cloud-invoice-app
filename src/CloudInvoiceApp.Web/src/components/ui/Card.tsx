@@ -1,7 +1,7 @@
 import React from "react";
 
 export const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-  <div className={`bg-[var(--color-background)] rounded-lg shadow-md p-4 ${className}`}>{children}</div>
+  <div className={`bg-[var(--color-background-card)] rounded-lg shadow-md p-4 ${className}`}>{children}</div>
 );
 
 export const CardHeader: React.FC<{ children: React.ReactNode }> = ({ children }) => (
