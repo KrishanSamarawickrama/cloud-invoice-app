@@ -18,8 +18,8 @@ const API_BASE_URL = "http://localhost:5101/api";
 function InvoiceModal({ open, onClose, onSave, initialData }) {
   const [invoiceNumber, setInvoiceNumber] = useState(initialData?.invoiceNumber || "");
   const [invoiceDate, setInvoiceDate] = useState(initialData?.invoiceDate || "");
-  const [from, setFrom] = useState(initialData?.from || "");
-  const [to, setTo] = useState(initialData?.to || "");
+  const [fromAddresses, setFromAddresses] = useState(initialData?.from || [""]);
+  const [toAddresses, setToAddresses] = useState(initialData?.to || [""]);
   const [services, setServices] = useState(initialData?.services || [{ serviceName: "", amount: 0 }]);
   const [accountHolder, setAccountHolder] = useState(initialData?.bankDetails?.accountHolder || "");
   const [bankName, setBankName] = useState(initialData?.bankDetails?.bankName || "");
@@ -43,14 +43,42 @@ function InvoiceModal({ open, onClose, onSave, initialData }) {
     setServices(services.filter((_, i) => i !== index));
   };
 
+  const handleFromChange = (index, value) => {
+    const updated = [...fromAddresses];
+    updated[index] = value;
+    setFromAddresses(updated);
+  };
+
+  const handleToChange = (index, value) => {
+    const updated = [...toAddresses];
+    updated[index] = value;
+    setToAddresses(updated);
+  };
+
+  const addFromAddress = () => {
+    setFromAddresses([...fromAddresses, ""]);
+  };
+
+  const addToAddress = () => {
+    setToAddresses([...toAddresses, ""]);
+  };
+
+  const removeFromAddress = (index) => {
+    setFromAddresses(fromAddresses.filter((_, i) => i !== index));
+  };
+
+  const removeToAddress = (index) => {
+    setToAddresses(toAddresses.filter((_, i) => i !== index));
+  };
+
   const totalAmount = services.reduce((sum, service) => sum + (service.amount || 0), 0);
 
   const handleSave = async () => {
     const invoiceData = {
       invoiceNumber,
       invoiceDate,
-      from: [from],
-      to: [to],
+      from: fromAddresses.filter(addr => addr.trim() !== ""),
+      to: toAddresses.filter(addr => addr.trim() !== ""),
       bankDetails: {
         accountHolder,
         bankName,
@@ -101,14 +129,73 @@ function InvoiceModal({ open, onClose, onSave, initialData }) {
               />
             </label>
           </div>
-          <label className="flex flex-col">
-            <span className="mb-1 font-medium">From</span>
-            <input className="border border-gray-300 rounded-md px-2 py-1" type="text" value={from} onChange={(e) => setFrom(e.target.value)} />
-          </label>
-          <label className="flex flex-col">
-            <span className="mb-1 font-medium">To</span>
-            <input className="border border-gray-300 rounded-md px-2 py-1" type="text" value={to} onChange={(e) => setTo(e.target.value)} />
-          </label>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="font-medium">From</span>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                onClick={addFromAddress}
+              >
+                Add Address
+              </Button>
+            </div>
+            {fromAddresses.map((addr, index) => (
+              <div key={index} className="flex gap-2">
+                <input
+                  className="flex-1 border border-gray-300 rounded-md px-2 py-1"
+                  placeholder="Address"
+                  value={addr}
+                  onChange={(e) => handleFromChange(index, e.target.value)}
+                />
+                {fromAddresses.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeFromAddress(index)}
+                  >
+                    ×
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="font-medium">To</span>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                onClick={addToAddress}
+              >
+                Add Address
+              </Button>
+            </div>
+            {toAddresses.map((addr, index) => (
+              <div key={index} className="flex gap-2">
+                <input
+                  className="flex-1 border border-gray-300 rounded-md px-2 py-1"
+                  placeholder="Address"
+                  value={addr}
+                  onChange={(e) => handleToChange(index, e.target.value)}
+                />
+                {toAddresses.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeToAddress(index)}
+                  >
+                    ×
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
           <div className="border-t mt-4 pt-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-medium">Services</h3>
@@ -254,7 +341,7 @@ export default function InvoiceManager() {
   };
 
   return (
-    <div className="min-h-screen bg-[--color-background] p-4">
+    <div className="min-h-screen bg-[--color-background] p-4 min-w-[90vw]">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold text-[--color-primary]">Invoice Manager</h1>
         <Button onClick={handleAddInvoice}>Add Invoice</Button>
