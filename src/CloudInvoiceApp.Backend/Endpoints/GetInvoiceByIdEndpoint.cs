@@ -1,4 +1,7 @@
-﻿using CloudInvoiceApp.Backend.Data;
+﻿using System.Text.Json;
+using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Requests;
+using CloudInvoiceApp.Backend.Responses;
 using FastEndpoints;
 
 namespace CloudInvoiceApp.Backend.Endpoints;
@@ -21,7 +24,20 @@ public class GetInvoiceByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithou
             await SendNotFoundAsync(ct);
             return;
         }
+        
+        InvoiceResponse invoiceResponse = new()
+        {
+            Id = invoice.Id,
+            FileName = invoice.FileName,
+            InvoiceNumber = invoice.InvoiceNumber,
+            InvoiceDate = invoice.InvoiceDate,
+            From = JsonSerializer.Deserialize<List<string>>(invoice.From) ?? [],
+            To = JsonSerializer.Deserialize<List<string>>(invoice.To) ?? [],
+            BankDetails = JsonSerializer.Deserialize<BankDetails>(invoice.BankDetails)!,
+            Services = JsonSerializer.Deserialize<List<Service>>(invoice.Services)!
+        };
+        
 
-        await SendOkAsync(invoice, ct);
+        await SendOkAsync(invoiceResponse, ct);
     }
 }
