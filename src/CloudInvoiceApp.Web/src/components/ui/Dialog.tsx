@@ -43,7 +43,7 @@ export const DialogContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   className,
   ...rest
 }) => (
-  <div className={`p-4 rounded-lg shadow-lg w-full max-w-2xl min-w-[500px] ${className || ""}`} {...rest} />
+  <div className={`p-4 rounded-lg shadow-lg w-full max-w-4xl min-w-[800px] ${className || ""}`} {...rest} />
 );
 
 export const DialogHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
