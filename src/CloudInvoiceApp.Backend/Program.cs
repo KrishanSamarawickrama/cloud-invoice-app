@@ -36,7 +36,7 @@ app.UseCors("AllowLocalhost");
 
 RunMigrations(app.Services);
 
-app.MapGet("/api/version", () => Results.Ok(new { Version = "v1.0.0", Tag = "20250128" }));
+app.MapGet("/api/version", () => Results.Ok(new { Version = "v1.0.1", Tag = "20250224" }));
 app.UseFastEndpoints().UseSwaggerGen();
 
 app.Run();

@@ -4,7 +4,7 @@ public class CreateInvoiceRequest
 {
     public string? FileName { get; set; }
     public required string InvoiceNumber { get; set; } = " 00-000013";
-    public required string InvoiceDate { get; set; } = DateTime.Now.ToString("MMMM dd, yyyy"); //January 24, 2024
+    public required DateOnly InvoiceDate { get; set; }
     public required List<string> From { get; set; }
     public required List<string> To { get; set; }
     public required BankDetails BankDetails { get; set; }

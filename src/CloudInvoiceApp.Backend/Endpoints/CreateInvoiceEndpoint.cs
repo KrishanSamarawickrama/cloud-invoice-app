@@ -19,7 +19,7 @@ public sealed class CreateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint
         var invoice = new Invoice
         {
             FileName = req.FileName,
-            InvoiceDate = req.InvoiceDate,
+            InvoiceDate = req.InvoiceDate.ToString("yyyy-MM-dd"),
             InvoiceNumber = req.InvoiceNumber,
             From = JsonSerializer.Serialize(req.From),
             To = JsonSerializer.Serialize(req.To),

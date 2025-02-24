@@ -15,7 +15,7 @@ public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint<Update
 
     public override async Task HandleAsync(UpdateInvoiceRequest req, CancellationToken ct)
     {
-        var invoice = await dbContext.Invoices.FindAsync(req.Id);
+        var invoice = await dbContext.Invoices.FindAsync(req.Id, ct);
 
         if (invoice is null)
         {
@@ -24,7 +24,7 @@ public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint<Update
         }
         
         invoice.InvoiceNumber = req.InvoiceNumber;
-        invoice.InvoiceDate = req.InvoiceDate;
+        invoice.InvoiceDate = req.InvoiceDate.ToString("yyyy-MM-dd");
         invoice.FileName = req.FileName;
         invoice.From = JsonSerializer.Serialize(req.From);
         invoice.To = JsonSerializer.Serialize(req.To);
