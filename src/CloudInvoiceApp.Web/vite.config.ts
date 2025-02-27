@@ -10,6 +10,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-    },
+    }
   },
+  server: {
+    port: parseInt(process.env.VITE_PORT || '3000'),
+    strictPort: true
+  }
 })

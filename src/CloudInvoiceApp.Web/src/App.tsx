@@ -10,14 +10,12 @@ import {
 } from "@/components/ui/Dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import axios from 'axios';
 import { DatePicker } from "@/components/ui/DatePicker";
-
-const API_BASE_URL = "http://localhost:5101/api";
+import { ApiService, InvoiceListItem, InvoiceDetail, CreateInvoiceRequest, UpdateInvoiceRequest } from "@/services/ApiService";
 
 function InvoiceModal({ open, onClose, onSave, initialData }) {
   const [invoiceNumber, setInvoiceNumber] = useState(initialData?.invoiceNumber || "");
-  const [invoiceDate, setInvoiceDate] = useState(initialData?.invoiceDate || "");
+  const [invoiceDate, setInvoiceDate] = useState(initialData?.invoiceDate || new Date().toISOString());
   const [fromAddresses, setFromAddresses] = useState(initialData?.from || [""]);
   const [toAddresses, setToAddresses] = useState(initialData?.to || [""]);
   const [services, setServices] = useState(initialData?.services || [{ serviceName: "", amount: 0 }]);
@@ -74,25 +72,42 @@ function InvoiceModal({ open, onClose, onSave, initialData }) {
   const totalAmount = services.reduce((sum, service) => sum + (service.amount || 0), 0);
 
   const handleSave = async () => {
+    // Clean up any empty values and prepare the data according to API schema
+    const cleanedFromAddresses = fromAddresses.filter(addr => addr.trim() !== "");
+    const cleanedToAddresses = toAddresses.filter(addr => addr.trim() !== "");
+    const cleanedServices = services.filter(s => s.serviceName.trim() !== "" && s.amount > 0);
+    
+    // Format date to ISO date string (YYYY-MM-DD)
+    const formattedDate = new Date(invoiceDate).toISOString().split('T')[0];
+    
     const invoiceData = {
       invoiceNumber,
-      invoiceDate,
-      from: fromAddresses.filter(addr => addr.trim() !== ""),
-      to: toAddresses.filter(addr => addr.trim() !== ""),
+      invoiceDate: formattedDate,
+      from: cleanedFromAddresses,
+      to: cleanedToAddresses,
       bankDetails: {
         accountHolder,
         bankName,
         accountNumber,
         swiftCode
       },
-      services: services.filter(s => s.serviceName && s.amount)
+      services: cleanedServices
     };
+
     try {
       if (initialData?.id) {
-        await axios.put(`${API_BASE_URL}/invoices`, { id: initialData.id, ...invoiceData });
+        // Update existing invoice
+        const updateRequest: UpdateInvoiceRequest = { 
+          id: initialData.id,
+          ...invoiceData
+        };
+        await ApiService.updateInvoice(updateRequest);
       } else {
-        await axios.post(`${API_BASE_URL}/invoices`, invoiceData);
+        // Create new invoice
+        const createRequest: CreateInvoiceRequest = invoiceData;
+        await ApiService.createInvoice(createRequest);
       }
+      
       onSave();
       onClose();
     } catch (error) {
@@ -303,15 +318,22 @@ function InvoiceModal({ open, onClose, onSave, initialData }) {
 }
 
 export default function InvoiceManager() {
-  const [invoices, setInvoices] = useState([]);
+  const [invoices, setInvoices] = useState<InvoiceListItem[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [invoiceToEdit, setInvoiceToEdit] = useState(null);
+  const [invoiceToEdit, setInvoiceToEdit] = useState<InvoiceDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchInvoices = async () => {
+    try {
+      const data = await ApiService.getInvoiceList();
+      setInvoices(data);
+    } catch (error) {
+      console.error('Error fetching invoices:', error);
+    }
+  };
+
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/invoices/list`).then(response => {
-      setInvoices(response.data);
-    });
+    fetchInvoices();
   }, []);
 
   const handleAddInvoice = () => {
@@ -319,25 +341,29 @@ export default function InvoiceManager() {
     setShowModal(true);
   };
 
-  const handleEditInvoice = async (invoice) => {
+  const handleEditInvoice = async (invoice: InvoiceListItem) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/invoices/${invoice.id}`);
-      setInvoiceToEdit(response.data);
+      const invoiceDetail = await ApiService.getInvoiceById(invoice.id);
+      setInvoiceToEdit(invoiceDetail);
       setShowModal(true);
     } catch (error) {
       console.error('Error fetching invoice details:', error);
       // Fallback to list data if fetch fails
-      setInvoiceToEdit(invoice);
+      setInvoiceToEdit(invoice as InvoiceDetail);
       setShowModal(true);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDeleteInvoice = async (id) => {
-    await axios.delete(`${API_BASE_URL}/invoices/${id}`);
-    setInvoices(invoices.filter((invoice) => invoice.id !== id));
+  const handleDeleteInvoice = async (id: number) => {
+    try {
+      await ApiService.deleteInvoice(id);
+      fetchInvoices(); // Refresh the list after deletion
+    } catch (error) {
+      console.error('Error deleting invoice:', error);
+    }
   };
 
   return (
@@ -356,7 +382,7 @@ export default function InvoiceManager() {
               <CardContent>
                 <div className="space-y-2">
                   <p className="text-gray-700">Date: {new Date(invoice.invoiceDate).toLocaleDateString()}</p>
-                  <p className="text-gray-700">Amount: ${invoice.amount}</p>
+                  <p className="text-gray-700">Amount: ${invoice.amount.toFixed(2)}</p>
                   {invoice.fileName && (
                     <p className="text-gray-700 truncate">File: {invoice.fileName}</p>
                   )}
@@ -393,9 +419,7 @@ export default function InvoiceManager() {
             setShowModal(false);
             setInvoiceToEdit(null);
             // Refresh the list after save
-            axios.get(`${API_BASE_URL}/invoices/list`).then(response => {
-              setInvoices(response.data);
-            });
+            fetchInvoices();
           }} 
           initialData={invoiceToEdit} 
         />

@@ -10,6 +10,7 @@ export const Dialog: React.FC<DialogProps> = ({ open, onOpenChange, children }) 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        // Optionally, you can also remove this if you want to prevent Escape key
         onOpenChange(false);
       }
     };
@@ -21,17 +22,8 @@ export const Dialog: React.FC<DialogProps> = ({ open, onOpenChange, children }) 
 
   if (!open) return null;
 
-  const handleClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      onOpenChange(false);
-    }
-  };
-
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center z-50"
-      onClick={handleClickOutside}      
-    >
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
       <div className="bg-white p-4 rounded-lg shadow-lg">
         {children}
       </div>
