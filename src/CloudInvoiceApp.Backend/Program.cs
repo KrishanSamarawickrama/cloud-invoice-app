@@ -11,6 +11,14 @@ builder.AddNpgsqlDbContext<InvoiceDbContext>("invoice-db", null,
     optionsBuilder => optionsBuilder.UseNpgsql(npgsqlBuilder =>
         npgsqlBuilder.MigrationsAssembly(typeof(Program).Assembly.GetName().Name)));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        policyBuilder => policyBuilder.WithOrigins("*")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddFastEndpoints().SwaggerDocument();
@@ -23,6 +31,8 @@ app.UseDeveloperExceptionPage();
 app.MapOpenApi();
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowLocalhost");
 
 RunMigrations(app.Services);
 
