@@ -64,5 +64,29 @@ export const ApiService = {
 
   deleteInvoice: async (id: number): Promise<void> => {
     await axios.delete(`${API_BASE_URL}/invoices/${id}`);
+  },
+
+  downloadInvoicePdf: async (id: number): Promise<void> => {
+    const response = await axios.get(`${API_BASE_URL}/invoices/${id}/pdf`, {
+      responseType: 'blob',
+    });
+
+    // Extract filename from Content-Disposition header
+    const disposition = response.headers['content-disposition'];
+    let filename = `invoice-${id}.pdf`;
+    if (disposition) {
+      const match = disposition.match(/filename\*?=(?:UTF-8''|"?)([^";]+)/i);
+      if (match) filename = decodeURIComponent(match[1].replace(/"/g, ''));
+    }
+
+    // Trigger browser download
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
   }
 };

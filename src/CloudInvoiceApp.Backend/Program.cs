@@ -4,6 +4,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 builder.AddServiceDefaults();
 
@@ -16,7 +17,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalhost",
         policyBuilder => policyBuilder.WithOrigins("*")
             .AllowAnyHeader()
-            .AllowAnyMethod());
+            .AllowAnyMethod()
+            .WithExposedHeaders("Content-Disposition"));
 });
 
 builder.Services.AddOpenApi();

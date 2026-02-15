@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { ApiService, InvoiceListItem, InvoiceDetail, CreateInvoiceRequest, UpdateInvoiceRequest } from "@/services/ApiService";
 
-function InvoiceModal({ open, onClose, onSave, initialData }) {
+function InvoiceModal({ open, onClose, onSave, initialData, onDownloadPdf }) {
   const [invoiceNumber, setInvoiceNumber] = useState(initialData?.invoiceNumber || "");
   const [invoiceDate, setInvoiceDate] = useState(initialData?.invoiceDate || new Date().toISOString());
   const [fromAddresses, setFromAddresses] = useState(initialData?.from || [""]);
@@ -310,6 +310,9 @@ function InvoiceModal({ open, onClose, onSave, initialData }) {
         </div>
         <DialogFooter className="mt-4">
           <Button variant="secondary" onClick={onClose}>Cancel</Button>
+          {initialData?.id && (
+            <Button variant="outline" onClick={() => onDownloadPdf(initialData.id)}>Download PDF</Button>
+          )}
           <Button onClick={handleSave}>{initialData ? "Update" : "Save"}</Button>
         </DialogFooter>
       </DialogContent>
@@ -366,6 +369,14 @@ export default function InvoiceManager() {
     }
   };
 
+  const handleDownloadPdf = async (id: number) => {
+    try {
+      await ApiService.downloadInvoicePdf(id);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[--color-background] p-4 min-w-[90vw]">
       <div className="flex items-center justify-between mb-4">
@@ -387,15 +398,21 @@ export default function InvoiceManager() {
                     <p className="text-gray-700 truncate">File: {invoice.fileName}</p>
                   )}
                   <div className="flex gap-2 mt-4">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={() => handleEditInvoice(invoice)}
                       disabled={isLoading}
                     >
                       {isLoading ? 'Loading...' : 'Edit'}
                     </Button>
-                    <Button 
-                      variant="destructive" 
+                    <Button
+                      variant="outline"
+                      onClick={() => handleDownloadPdf(invoice.id)}
+                    >
+                      Download
+                    </Button>
+                    <Button
+                      variant="destructive"
                       onClick={() => handleDeleteInvoice(invoice.id)}
                       disabled={isLoading}
                     >
@@ -421,7 +438,8 @@ export default function InvoiceManager() {
             // Refresh the list after save
             fetchInvoices();
           }} 
-          initialData={invoiceToEdit} 
+          initialData={invoiceToEdit}
+          onDownloadPdf={handleDownloadPdf}
         />
       )}
     </div>
