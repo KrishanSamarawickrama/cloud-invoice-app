@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { Header } from "@/components/Header";
+import { Plus, Search, X } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 import { InvoiceTable } from "@/components/InvoiceTable";
 import { InvoiceTableSkeleton } from "@/components/InvoiceTableSkeleton";
 import { InvoiceModal } from "@/components/InvoiceModal";
@@ -93,30 +95,61 @@ export function InvoiceManager() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-background)]">
-      <Header
-        invoiceCount={invoices.length}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onNewInvoice={handleNewInvoice}
-      />
+    <>
+      {/* Page header */}
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+              Invoices
+            </h1>
+            <Badge>{invoices.length}</Badge>
+          </div>
+          <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
+            Manage and track your invoices
+          </p>
+        </div>
+        <Button onClick={handleNewInvoice}>
+          <Plus className="mr-1.5 h-4 w-4" />
+          New Invoice
+        </Button>
+      </div>
 
-      <main className="mx-auto max-w-6xl px-6 py-6">
-        {isLoading ? (
-          <InvoiceTableSkeleton />
-        ) : invoices.length === 0 ? (
-          <EmptyState onCreateInvoice={handleNewInvoice} />
-        ) : filteredInvoices.length === 0 ? (
-          <EmptyState onCreateInvoice={handleNewInvoice} hasSearch />
-        ) : (
-          <InvoiceTable
-            invoices={filteredInvoices}
-            onEdit={handleEditInvoice}
-            onDelete={setInvoiceToDelete}
-            onDownload={handleDownloadPdf}
-          />
+      {/* Search bar */}
+      <div className="relative mb-5 max-w-sm">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]" />
+        <input
+          type="text"
+          placeholder="Search invoices..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="h-9 w-full rounded-md border border-[var(--color-border)] bg-white pl-9 pr-8 text-sm placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery("")}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+          >
+            <X className="h-4 w-4" />
+          </button>
         )}
-      </main>
+      </div>
+
+      {/* Content */}
+      {isLoading ? (
+        <InvoiceTableSkeleton />
+      ) : invoices.length === 0 ? (
+        <EmptyState onCreateInvoice={handleNewInvoice} />
+      ) : filteredInvoices.length === 0 ? (
+        <EmptyState onCreateInvoice={handleNewInvoice} hasSearch />
+      ) : (
+        <InvoiceTable
+          invoices={filteredInvoices}
+          onEdit={handleEditInvoice}
+          onDelete={setInvoiceToDelete}
+          onDownload={handleDownloadPdf}
+        />
+      )}
 
       {showModal && (
         <InvoiceModal
@@ -140,6 +173,6 @@ export function InvoiceManager() {
         variant="destructive"
         onConfirm={handleDeleteConfirm}
       />
-    </div>
+    </>
   );
 }
