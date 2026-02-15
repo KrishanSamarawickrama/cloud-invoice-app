@@ -1,15 +1,55 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 
-export const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-  <div className={`bg-[var(--color-background-card)] rounded-lg shadow-md p-4 ${className}`}>{children}</div>
-);
+export function Card({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-sm",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 
-export const CardHeader: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="pb-2 border-b">{children}</div>
-);
+export function CardHeader({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <div className={cn("pb-2", className)}>{children}</div>;
+}
 
-export const CardTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <h3 className="text-lg font-semibold">{children}</h3>
-);
+export function CardTitle({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <h3 className={cn("text-lg font-semibold text-[var(--color-text)]", className)}>
+      {children}
+    </h3>
+  );
+}
 
-export const CardContent: React.FC<{ children: React.ReactNode }> = ({ children }) => <div className="mt-2">{children}</div>;
+export function CardContent({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <div className={cn("mt-2", className)}>{children}</div>;
+}

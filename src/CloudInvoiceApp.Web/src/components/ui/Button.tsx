@@ -1,22 +1,46 @@
 import React from "react";
+import { cn } from "@/lib/utils";
+
+const variants = {
+  primary:
+    "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] focus-visible:ring-[var(--color-accent)]",
+  secondary:
+    "bg-[var(--color-accent-light)] text-[var(--color-accent)] hover:bg-blue-100 focus-visible:ring-[var(--color-accent)]",
+  outline:
+    "border border-[var(--color-border)] bg-white text-[var(--color-text)] hover:bg-slate-50 focus-visible:ring-[var(--color-accent)]",
+  ghost:
+    "text-[var(--color-text-secondary)] hover:bg-slate-100 focus-visible:ring-[var(--color-accent)]",
+  destructive:
+    "bg-[var(--color-destructive)] text-white hover:bg-[var(--color-destructive-hover)] focus-visible:ring-[var(--color-destructive)]",
+} as const;
+
+const sizes = {
+  sm: "h-8 px-3 text-sm",
+  md: "h-9 px-4 text-sm",
+  lg: "h-10 px-5 text-base",
+  icon: "h-8 w-8 p-0",
+} as const;
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "destructive";
+  variant?: keyof typeof variants;
+  size?: keyof typeof sizes;
 }
 
-export const Button: React.FC<ButtonProps> = ({ variant = "primary", children, className, ...props }) => {
-  const baseStyles = "px-4 py-2 rounded-md font-medium transition-all";
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = "primary", size = "md", className, ...props }, ref) => (
+    <button
+      ref={ref}
+      className={cn(
+        "inline-flex items-center justify-center rounded-md font-medium transition-colors",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+        "disabled:pointer-events-none disabled:opacity-50",
+        variants[variant],
+        sizes[size],
+        className
+      )}
+      {...props}
+    />
+  )
+);
 
-  const variantStyles = {
-    primary: "bg-[var(--color-primary)] text-white hover:bg-[var(--color-secondary)]",
-    secondary: "bg-[var(--color-secondary)] text-white hover:bg-[var(--color-accent)]",
-    outline: "border border-[var(--color-muted)] text-[var(--color-muted)] hover:bg-[var(--color-background)]",
-    destructive: "bg-red-600 text-white hover:bg-red-700",
-  };
-
-  return (
-    <button className={`${baseStyles} ${variantStyles[variant]} ${className}`} {...props}>
-      {children}
-    </button>
-  );
-};
+Button.displayName = "Button";

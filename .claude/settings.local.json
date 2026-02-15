@@ -4,7 +4,10 @@
       "Bash(git -C \"C:\\\\BATCAVE\\\\Projects\\\\cloud-invoice-app\" log --oneline -20)",
       "Bash(dotnet restore:*)",
       "Bash(dotnet build:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
