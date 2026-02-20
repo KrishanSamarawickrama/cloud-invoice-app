@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Requests;
 using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
@@ -12,15 +13,15 @@ public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWi
     public override void Configure()
     {
         Get("/api/invoices/{id:int}/pdf");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
         var id = Route<int>("id");
+        var userId = User.GetUserId();
         var invoice = await dbContext.Invoices.FindAsync([id], cancellationToken: ct);
 
-        if (invoice is null)
+        if (invoice is null || invoice.UserId != userId)
         {
             await SendNotFoundAsync(ct);
             return;
@@ -43,14 +44,12 @@ public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWi
 
     private static string BuildFileName(List<string> from, string invoiceDate, string invoiceNumber)
     {
-        // Extract first name from first "from" entry
         var firstName = "Invoice";
         if (from.Count > 0 && !string.IsNullOrWhiteSpace(from[0]))
         {
             firstName = from[0].Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
         }
 
-        // Parse month and year from date
         var month = "Unknown";
         var year = DateTime.Now.Year.ToString();
 
@@ -65,7 +64,6 @@ public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWi
             year = d2.Year.ToString();
         }
 
-        // Strip hyphens and spaces from invoice number
         var cleanNumber = invoiceNumber.Replace("-", "").Replace(" ", "");
 
         return $"{firstName}-{month}-{year}-{cleanNumber}.pdf";

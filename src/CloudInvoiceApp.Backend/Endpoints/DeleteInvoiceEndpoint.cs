@@ -1,4 +1,5 @@
-﻿using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Extensions;
 using FastEndpoints;
 
 namespace CloudInvoiceApp.Backend.Endpoints;
@@ -8,15 +9,15 @@ public class DeleteInvoiceEndpoint(InvoiceDbContext dbContext) : EndpointWithout
     public override void Configure()
     {
         Delete("/api/invoices/{id:int}");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
         var id = Route<int>("id");
+        var userId = User.GetUserId();
         var invoice = await dbContext.Invoices.FindAsync([id], ct);
 
-        if (invoice is null)
+        if (invoice is null || invoice.UserId != userId)
         {
             await SendNotFoundAsync(ct);
             return;
