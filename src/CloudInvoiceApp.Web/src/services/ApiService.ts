@@ -138,6 +138,19 @@ export interface InvoiceDetail extends InvoiceListItem {
   services: Service[];
 }
 
+export interface ProfileResponse {
+  email: string;
+  name: string;
+  pictureUrl?: string | null;
+  defaultFromAddress?: string[] | null;
+  defaultBankDetails?: BankDetails | null;
+}
+
+export interface UpdateProfileRequest {
+  defaultFromAddress?: string[] | null;
+  defaultBankDetails?: BankDetails | null;
+}
+
 export const ApiService = {
   getInvoiceList: async (): Promise<InvoiceListItem[]> => {
     const response = await api.get(`/invoices/list`);
@@ -159,6 +172,15 @@ export const ApiService = {
 
   deleteInvoice: async (id: number): Promise<void> => {
     await api.delete(`/invoices/${id}`);
+  },
+
+  getProfile: async (): Promise<ProfileResponse> => {
+    const response = await api.get(`/profile`);
+    return response.data;
+  },
+
+  updateProfile: async (profile: UpdateProfileRequest): Promise<void> => {
+    await api.put(`/profile`, profile);
   },
 
   downloadInvoicePdf: async (id: number): Promise<void> => {

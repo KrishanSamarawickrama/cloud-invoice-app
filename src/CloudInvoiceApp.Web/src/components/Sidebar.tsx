@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FileText, LayoutDashboard, Users, LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,6 +15,7 @@ const navItems = [
 
 export function Sidebar({ invoiceCount }: SidebarProps) {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <aside className="flex h-full w-60 flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)]">
@@ -60,31 +61,37 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
       {user && (
         <div className="border-t border-[var(--color-border)] p-3">
           <div className="flex items-center gap-3 rounded-md px-2 py-2">
-            {user.pictureUrl ? (
-              <img
-                src={user.pictureUrl}
-                alt={user.name}
-                className="h-8 w-8 rounded-full"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-xs font-medium text-white">
-                {user.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()}
+            <button
+              onClick={() => navigate("/profile")}
+              className="flex min-w-0 flex-1 items-center gap-3 rounded-md transition-colors hover:bg-slate-100 -ml-1 pl-1 py-0.5 pr-1"
+              title="View profile"
+            >
+              {user.pictureUrl ? (
+                <img
+                  src={user.pictureUrl}
+                  alt={user.name}
+                  className="h-8 w-8 rounded-full"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-xs font-medium text-white">
+                  {user.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0 flex-1 text-left">
+                <p className="truncate text-sm font-medium text-[var(--color-text)]">
+                  {user.name}
+                </p>
+                <p className="truncate text-xs text-[var(--color-text-muted)]">
+                  {user.email}
+                </p>
               </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-[var(--color-text)]">
-                {user.name}
-              </p>
-              <p className="truncate text-xs text-[var(--color-text-muted)]">
-                {user.email}
-              </p>
-            </div>
+            </button>
             <button
               onClick={logout}
               className="rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-slate-100 hover:text-[var(--color-destructive)]"

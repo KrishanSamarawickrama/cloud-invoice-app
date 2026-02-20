@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Trash2, Download, Building2, User, Briefcase, Landmark } from "lucide-react";
 import {
   Dialog,
@@ -46,6 +46,24 @@ export function InvoiceModal({
   const [accountNumber, setAccountNumber] = useState(initialData?.bankDetails?.accountNumber || "");
   const [swiftCode, setSwiftCode] = useState(initialData?.bankDetails?.swiftCode || "");
   const [isSaving, setIsSaving] = useState(false);
+
+  // Pre-populate from profile defaults when creating a new invoice
+  useEffect(() => {
+    if (!open || initialData) return;
+    ApiService.getProfile()
+      .then((profile) => {
+        if (profile.defaultFromAddress?.length) {
+          setFromAddresses(profile.defaultFromAddress);
+        }
+        if (profile.defaultBankDetails) {
+          setAccountHolder(profile.defaultBankDetails.accountHolder || "");
+          setBankName(profile.defaultBankDetails.bankName || "");
+          setAccountNumber(profile.defaultBankDetails.accountNumber || "");
+          setSwiftCode(profile.defaultBankDetails.swiftCode || "");
+        }
+      })
+      .catch(() => {});
+  }, [open, initialData]);
 
   const handleServiceChange = (index: number, field: string, value: string) => {
     const updated = [...services];
@@ -106,7 +124,7 @@ export function InvoiceModal({
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>
             {initialData ? "Edit Invoice" : "New Invoice"}
@@ -135,79 +153,82 @@ export function InvoiceModal({
             </div>
           </section>
 
-          {/* From */}
-          <section>
-            <div className="flex items-center justify-between">
-              <SectionHeading icon={<User className="h-4 w-4" />} title="From" />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setFromAddresses([...fromAddresses, ""])}
-              >
-                <Plus className="mr-1 h-3.5 w-3.5" />
-                Add
-              </Button>
-            </div>
-            <div className="space-y-2 mt-3">
-              {fromAddresses.map((addr, i) => (
-                <div key={i} className="flex gap-2">
-                  <Input
-                    className="flex-1"
-                    placeholder="Name or address line"
-                    value={addr}
-                    onChange={(e) => handleFromChange(i, e.target.value)}
-                  />
-                  {fromAddresses.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-[var(--color-destructive)] hover:bg-red-50 shrink-0"
-                      onClick={() => setFromAddresses(fromAddresses.filter((_, j) => j !== i))}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
+          {/* From & To side by side */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* From */}
+            <section>
+              <div className="flex items-center justify-between">
+                <SectionHeading icon={<User className="h-4 w-4" />} title="From" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setFromAddresses([...fromAddresses, ""])}
+                >
+                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  Add
+                </Button>
+              </div>
+              <div className="space-y-2 mt-3">
+                {fromAddresses.map((addr, i) => (
+                  <div key={i} className="relative">
+                    <Input
+                      className="w-full"
+                      placeholder="Name or address line"
+                      value={addr}
+                      onChange={(e) => handleFromChange(i, e.target.value)}
+                    />
+                    {fromAddresses.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] hover:bg-red-50"
+                        onClick={() => setFromAddresses(fromAddresses.filter((_, j) => j !== i))}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
 
-          {/* To */}
-          <section>
-            <div className="flex items-center justify-between">
-              <SectionHeading icon={<Building2 className="h-4 w-4" />} title="To" />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setToAddresses([...toAddresses, ""])}
-              >
-                <Plus className="mr-1 h-3.5 w-3.5" />
-                Add
-              </Button>
-            </div>
-            <div className="space-y-2 mt-3">
-              {toAddresses.map((addr, i) => (
-                <div key={i} className="flex gap-2">
-                  <Input
-                    className="flex-1"
-                    placeholder="Recipient name or address"
-                    value={addr}
-                    onChange={(e) => handleToChange(i, e.target.value)}
-                  />
-                  {toAddresses.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-[var(--color-destructive)] hover:bg-red-50 shrink-0"
-                      onClick={() => setToAddresses(toAddresses.filter((_, j) => j !== i))}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
+            {/* To */}
+            <section>
+              <div className="flex items-center justify-between">
+                <SectionHeading icon={<Building2 className="h-4 w-4" />} title="To" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setToAddresses([...toAddresses, ""])}
+                >
+                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  Add
+                </Button>
+              </div>
+              <div className="space-y-2 mt-3">
+                {toAddresses.map((addr, i) => (
+                  <div key={i} className="relative">
+                    <Input
+                      className="w-full"
+                      placeholder="Recipient name or address"
+                      value={addr}
+                      onChange={(e) => handleToChange(i, e.target.value)}
+                    />
+                    {toAddresses.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] hover:bg-red-50"
+                        onClick={() => setToAddresses(toAddresses.filter((_, j) => j !== i))}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
 
           {/* Services */}
           <section>
