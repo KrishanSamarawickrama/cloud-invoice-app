@@ -402,3 +402,4 @@ FodyWeavers.xsd
 /src/.idea
 
 /appsettings.local.json
+src/CloudInvoiceApp.Backend/appsettings.local.json
