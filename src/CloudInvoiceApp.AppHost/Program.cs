@@ -20,7 +20,7 @@ var backend = builder.AddProject<Projects.CloudInvoiceApp_Backend>("backend")
 var frontend = builder.AddNpmApp("frontend", "../CloudInvoiceApp.Web", "dev")
     .WithReference(backend)
     .WaitFor(backend)
-    .WithHttpEndpoint(env: "VITE_PORT")
+    .WithHttpEndpoint(port: 3000, env: "VITE_PORT")
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 

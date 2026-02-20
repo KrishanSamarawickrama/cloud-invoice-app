@@ -2,6 +2,101 @@ import axios from 'axios';
 
 const API_BASE_URL = "http://localhost:5101/api";
 
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+});
+
+// Auth interceptor state — set by AuthProvider
+let getAccessToken: (() => string | null) | null = null;
+let refreshTokenFn: (() => Promise<string | null>) | null = null;
+let onAuthFailure: (() => void) | null = null;
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (token: string | null) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+function processQueue(error: unknown, token: string | null = null) {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+}
+
+export function configureApiAuth(
+  tokenGetter: () => string | null,
+  refreshFn: () => Promise<string | null>,
+  authFailureFn: () => void
+) {
+  getAccessToken = tokenGetter;
+  refreshTokenFn = refreshFn;
+  onAuthFailure = authFailureFn;
+}
+
+// Request interceptor: attach Authorization header
+api.interceptors.request.use((config) => {
+  const token = getAccessToken?.();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Response interceptor: handle 401 with token refresh queue
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      refreshTokenFn &&
+      // Don't retry auth endpoints to avoid infinite loops
+      !originalRequest.url?.includes('/auth/')
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const newToken = await refreshTokenFn();
+        if (newToken) {
+          processQueue(null, newToken);
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return api(originalRequest);
+        } else {
+          processQueue(new Error('Refresh failed'), null);
+          onAuthFailure?.();
+          return Promise.reject(error);
+        }
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        onAuthFailure?.();
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+// --- Types (unchanged) ---
+
 export interface BankDetails {
   accountHolder: string;
   bankName: string;
@@ -45,29 +140,29 @@ export interface InvoiceDetail extends InvoiceListItem {
 
 export const ApiService = {
   getInvoiceList: async (): Promise<InvoiceListItem[]> => {
-    const response = await axios.get(`${API_BASE_URL}/invoices/list`);
+    const response = await api.get(`/invoices/list`);
     return response.data;
   },
 
   getInvoiceById: async (id: number): Promise<InvoiceDetail> => {
-    const response = await axios.get(`${API_BASE_URL}/invoices/${id}`);
+    const response = await api.get(`/invoices/${id}`);
     return response.data;
   },
 
   createInvoice: async (invoice: CreateInvoiceRequest): Promise<void> => {
-    await axios.post(`${API_BASE_URL}/invoices`, invoice);
+    await api.post(`/invoices`, invoice);
   },
 
   updateInvoice: async (invoice: UpdateInvoiceRequest): Promise<void> => {
-    await axios.put(`${API_BASE_URL}/invoices`, invoice);
+    await api.put(`/invoices`, invoice);
   },
 
   deleteInvoice: async (id: number): Promise<void> => {
-    await axios.delete(`${API_BASE_URL}/invoices/${id}`);
+    await api.delete(`/invoices/${id}`);
   },
 
   downloadInvoicePdf: async (id: number): Promise<void> => {
-    const response = await axios.get(`${API_BASE_URL}/invoices/${id}/pdf`, {
+    const response = await api.get(`/invoices/${id}/pdf`, {
       responseType: 'blob',
     });
 

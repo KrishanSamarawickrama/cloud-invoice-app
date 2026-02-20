@@ -1,5 +1,6 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Requests;
 using FastEndpoints;
 
@@ -10,19 +11,19 @@ public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint<Update
     public override void Configure()
     {
         Put("/api/invoices");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(UpdateInvoiceRequest req, CancellationToken ct)
     {
+        var userId = User.GetUserId();
         var invoice = await dbContext.Invoices.FindAsync(req.Id, ct);
 
-        if (invoice is null)
+        if (invoice is null || invoice.UserId != userId)
         {
             await SendNotFoundAsync(ct);
             return;
         }
-        
+
         invoice.InvoiceNumber = req.InvoiceNumber;
         invoice.InvoiceDate = req.InvoiceDate.ToString("yyyy-MM-dd");
         invoice.FileName = req.FileName;

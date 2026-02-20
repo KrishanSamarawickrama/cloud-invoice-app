@@ -17,4 +17,6 @@ public sealed class Invoice
     public required string Services { get; set; }
     public double InvoiceTotal { get; set; }
     public DateTime CreatedDate { get; set; }
+    public int? UserId { get; set; }
+    public User? User { get; set; }
 }

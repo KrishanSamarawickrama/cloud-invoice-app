@@ -1,5 +1,6 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Requests;
 using CloudInvoiceApp.Backend.Responses;
 using FastEndpoints;
@@ -12,12 +13,15 @@ public class GetInvoiceListEndpoint(InvoiceDbContext dbContext) : EndpointWithou
     public override void Configure()
     {
         Get("/api/invoices/list");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var invoices = await dbContext.Invoices.ToListAsync(ct);
+        var userId = User.GetUserId();
+        var invoices = await dbContext.Invoices
+            .Where(i => i.UserId == userId)
+            .ToListAsync(ct);
+
         var invoicesResponse = invoices.Select(x => new InvoiceListResponse
             {
                 Id = x.Id,
@@ -26,7 +30,7 @@ public class GetInvoiceListEndpoint(InvoiceDbContext dbContext) : EndpointWithou
                 InvoiceDate = x.InvoiceDate,
                 Amount = JsonSerializer.Deserialize<List<Service>>(x.Services)!.Sum(x=>x.Amount)
             });
-        
+
         await SendOkAsync(invoicesResponse, ct);
     }
 }

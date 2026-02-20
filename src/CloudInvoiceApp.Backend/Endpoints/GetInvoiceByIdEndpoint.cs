@@ -1,5 +1,6 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Requests;
 using CloudInvoiceApp.Backend.Responses;
 using FastEndpoints;
@@ -11,20 +12,20 @@ public class GetInvoiceByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithou
     public override void Configure()
     {
         Get("/api/invoices/{id:int}");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
         var id = Route<int>("id");
+        var userId = User.GetUserId();
         var invoice = await dbContext.Invoices.FindAsync([id], cancellationToken: ct);
 
-        if (invoice is null)
+        if (invoice is null || invoice.UserId != userId)
         {
             await SendNotFoundAsync(ct);
             return;
         }
-        
+
         InvoiceResponse invoiceResponse = new()
         {
             Id = invoice.Id,
@@ -36,7 +37,6 @@ public class GetInvoiceByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithou
             BankDetails = JsonSerializer.Deserialize<BankDetails>(invoice.BankDetails)!,
             Services = JsonSerializer.Deserialize<List<Service>>(invoice.Services)!
         };
-        
 
         await SendOkAsync(invoiceResponse, ct);
     }

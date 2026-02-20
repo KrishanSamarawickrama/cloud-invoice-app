@@ -1,5 +1,6 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Models;
 using CloudInvoiceApp.Backend.Requests;
 using FastEndpoints;
@@ -11,7 +12,6 @@ public sealed class CreateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint
     public override void Configure()
     {
         Post("/api/invoices");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CreateInvoiceRequest req, CancellationToken ct)
@@ -26,7 +26,8 @@ public sealed class CreateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint
             BankDetails = JsonSerializer.Serialize(req.BankDetails),
             Services = JsonSerializer.Serialize(req.Services),
             InvoiceTotal = req.Services.Sum(x=>x.Amount),
-            CreatedDate = DateTime.UtcNow
+            CreatedDate = DateTime.UtcNow,
+            UserId = User.GetUserId()
         };
 
         dbContext.Invoices.Add(invoice);
