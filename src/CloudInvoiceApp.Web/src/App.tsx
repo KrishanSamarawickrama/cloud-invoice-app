@@ -8,6 +8,7 @@ import { DashboardPage } from "@/pages/DashboardPage";
 import { InvoicesPage } from "@/pages/InvoicesPage";
 import { ClientsPage } from "@/pages/ClientsPage";
 import { LoginPage } from "@/pages/LoginPage";
+import { ProfilePage } from "@/pages/ProfilePage";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
@@ -23,6 +24,7 @@ export default function App() {
                 <Route index element={<DashboardPage />} />
                 <Route path="invoices" element={<InvoicesPage />} />
                 <Route path="clients" element={<ClientsPage />} />
+                <Route path="profile" element={<ProfilePage />} />
               </Route>
             </Route>
           </Routes>

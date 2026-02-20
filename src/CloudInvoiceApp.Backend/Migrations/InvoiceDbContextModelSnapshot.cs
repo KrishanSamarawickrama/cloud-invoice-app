@@ -84,6 +84,12 @@ namespace CloudInvoiceApp.Backend.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("DefaultBankDetails")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DefaultFromAddress")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");

@@ -16,5 +16,7 @@ public sealed class User
     public DateTime LastLoginDate { get; set; }
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
+    public string? DefaultFromAddress { get; set; }
+    public string? DefaultBankDetails { get; set; }
     public ICollection<Invoice> Invoices { get; set; } = [];
 }

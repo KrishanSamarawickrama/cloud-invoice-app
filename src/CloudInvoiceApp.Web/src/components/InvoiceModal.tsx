@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Trash2, Download, Building2, User, Briefcase, Landmark } from "lucide-react";
 import {
   Dialog,
@@ -46,6 +46,24 @@ export function InvoiceModal({
   const [accountNumber, setAccountNumber] = useState(initialData?.bankDetails?.accountNumber || "");
   const [swiftCode, setSwiftCode] = useState(initialData?.bankDetails?.swiftCode || "");
   const [isSaving, setIsSaving] = useState(false);
+
+  // Pre-populate from profile defaults when creating a new invoice
+  useEffect(() => {
+    if (!open || initialData) return;
+    ApiService.getProfile()
+      .then((profile) => {
+        if (profile.defaultFromAddress?.length) {
+          setFromAddresses(profile.defaultFromAddress);
+        }
+        if (profile.defaultBankDetails) {
+          setAccountHolder(profile.defaultBankDetails.accountHolder || "");
+          setBankName(profile.defaultBankDetails.bankName || "");
+          setAccountNumber(profile.defaultBankDetails.accountNumber || "");
+          setSwiftCode(profile.defaultBankDetails.swiftCode || "");
+        }
+      })
+      .catch(() => {});
+  }, [open, initialData]);
 
   const handleServiceChange = (index: number, field: string, value: string) => {
     const updated = [...services];

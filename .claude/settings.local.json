@@ -8,7 +8,8 @@
       "Bash(npm install:*)",
       "Bash(npm run lint:*)",
       "Bash(npm run build:*)",
-      "Bash(dotnet ef migrations:*)"
+      "Bash(dotnet ef migrations:*)",
+      "Bash(git status:*)"
     ]
   }
 }
