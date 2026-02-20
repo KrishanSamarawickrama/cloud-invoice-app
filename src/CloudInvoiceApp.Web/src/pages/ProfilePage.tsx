@@ -136,9 +136,9 @@ export function ProfilePage() {
           </p>
           <div className="mt-3 space-y-2">
             {fromAddresses.map((addr, i) => (
-              <div key={i} className="flex gap-2">
+              <div key={i} className="relative">
                 <Input
-                  className="flex-1"
+                  className="w-full"
                   placeholder="Name or address line"
                   value={addr}
                   onChange={(e) => handleFromChange(i, e.target.value)}
@@ -147,7 +147,7 @@ export function ProfilePage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-[var(--color-destructive)] hover:bg-red-50 shrink-0"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] hover:bg-red-50"
                     onClick={() =>
                       setFromAddresses(fromAddresses.filter((_, j) => j !== i))
                     }
