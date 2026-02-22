@@ -1,0 +1,22 @@
+# Builds on both ARM64 (Oracle Cloud) and x86 (Hetzner) automatically
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+RUN apt-get update && apt-get install -y libfontconfig1 && rm -rf /var/lib/apt/lists/*
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY CloudInvoiceApp.sln .
+COPY CloudInvoiceApp.Backend/CloudInvoiceApp.Backend.csproj CloudInvoiceApp.Backend/
+COPY CloudInvoiceApp.ServiceDefaults/CloudInvoiceApp.ServiceDefaults.csproj CloudInvoiceApp.ServiceDefaults/
+RUN dotnet restore CloudInvoiceApp.Backend/CloudInvoiceApp.Backend.csproj
+
+COPY CloudInvoiceApp.Backend/ CloudInvoiceApp.Backend/
+COPY CloudInvoiceApp.ServiceDefaults/ CloudInvoiceApp.ServiceDefaults/
+RUN dotnet publish CloudInvoiceApp.Backend/CloudInvoiceApp.Backend.csproj -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "CloudInvoiceApp.Backend.dll"]

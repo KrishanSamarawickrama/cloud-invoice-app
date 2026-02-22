@@ -9,7 +9,8 @@
       "Bash(npm run lint:*)",
       "Bash(npm run build:*)",
       "Bash(dotnet ef migrations:*)",
-      "Bash(git status:*)"
+      "Bash(git status:*)",
+      "WebSearch"
     ]
   }
 }
