@@ -7,6 +7,7 @@ public class InvoiceDbContext(DbContextOptions<InvoiceDbContext> options) : DbCo
 {
     public DbSet<Invoice> Invoices { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Client> Clients { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,6 +25,14 @@ public class InvoiceDbContext(DbContextOptions<InvoiceDbContext> options) : DbCo
                 .WithMany(u => u.Invoices)
                 .HasForeignKey(i => i.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<Client>(entity =>
+        {
+            entity.HasOne(c => c.User)
+                .WithMany(u => u.Clients)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

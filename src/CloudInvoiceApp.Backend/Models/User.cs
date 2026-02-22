@@ -19,4 +19,5 @@ public sealed class User
     public string? DefaultFromAddress { get; set; }
     public string? DefaultBankDetails { get; set; }
     public ICollection<Invoice> Invoices { get; set; } = [];
+    public ICollection<Client> Clients { get; set; } = [];
 }

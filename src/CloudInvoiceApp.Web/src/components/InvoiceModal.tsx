@@ -18,6 +18,7 @@ import {
   type CreateInvoiceRequest,
   type UpdateInvoiceRequest,
 } from "@/services/ApiService";
+import { ClientSelector } from "@/components/ClientSelector";
 
 interface InvoiceModalProps {
   open: boolean;
@@ -196,14 +197,17 @@ export function InvoiceModal({
             <section>
               <div className="flex items-center justify-between">
                 <SectionHeading icon={<Building2 className="h-4 w-4" />} title="To" />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setToAddresses([...toAddresses, ""])}
-                >
-                  <Plus className="mr-1 h-3.5 w-3.5" />
-                  Add
-                </Button>
+                <div className="flex items-center gap-2">
+                  <ClientSelector onSelect={(address) => setToAddresses(address.length ? address : [""])} />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setToAddresses([...toAddresses, ""])}
+                  >
+                    <Plus className="mr-1 h-3.5 w-3.5" />
+                    Add
+                  </Button>
+                </div>
               </div>
               <div className="space-y-2 mt-3">
                 {toAddresses.map((addr, i) => (
