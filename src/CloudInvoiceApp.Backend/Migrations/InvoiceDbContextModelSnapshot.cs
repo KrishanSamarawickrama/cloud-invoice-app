@@ -22,6 +22,38 @@ namespace CloudInvoiceApp.Backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CloudInvoiceApp.Backend.Models.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Clients");
+                });
+
             modelBuilder.Entity("CloudInvoiceApp.Backend.Models.Invoice", b =>
                 {
                     b.Property<int>("Id")
@@ -125,6 +157,17 @@ namespace CloudInvoiceApp.Backend.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("CloudInvoiceApp.Backend.Models.Client", b =>
+                {
+                    b.HasOne("CloudInvoiceApp.Backend.Models.User", "User")
+                        .WithMany("Clients")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CloudInvoiceApp.Backend.Models.Invoice", b =>
                 {
                     b.HasOne("CloudInvoiceApp.Backend.Models.User", "User")
@@ -137,6 +180,8 @@ namespace CloudInvoiceApp.Backend.Migrations
 
             modelBuilder.Entity("CloudInvoiceApp.Backend.Models.User", b =>
                 {
+                    b.Navigation("Clients");
+
                     b.Navigation("Invoices");
                 });
 #pragma warning restore 612, 618

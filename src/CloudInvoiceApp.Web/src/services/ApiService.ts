@@ -151,6 +151,27 @@ export interface UpdateProfileRequest {
   defaultBankDetails?: BankDetails | null;
 }
 
+export interface ClientListItem {
+  id: number;
+  name: string;
+  email?: string | null;
+}
+
+export interface ClientDetail extends ClientListItem {
+  address: string[];
+  createdDate: string;
+}
+
+export interface CreateClientRequest {
+  name: string;
+  email?: string | null;
+  address: string[];
+}
+
+export interface UpdateClientRequest extends CreateClientRequest {
+  id: number;
+}
+
 export const ApiService = {
   getInvoiceList: async (): Promise<InvoiceListItem[]> => {
     const response = await api.get(`/invoices/list`);
@@ -181,6 +202,28 @@ export const ApiService = {
 
   updateProfile: async (profile: UpdateProfileRequest): Promise<void> => {
     await api.put(`/profile`, profile);
+  },
+
+  getClients: async (): Promise<ClientListItem[]> => {
+    const response = await api.get(`/clients`);
+    return response.data;
+  },
+
+  getClientById: async (id: number): Promise<ClientDetail> => {
+    const response = await api.get(`/clients/${id}`);
+    return response.data;
+  },
+
+  createClient: async (client: CreateClientRequest): Promise<void> => {
+    await api.post(`/clients`, client);
+  },
+
+  updateClient: async (client: UpdateClientRequest): Promise<void> => {
+    await api.put(`/clients`, client);
+  },
+
+  deleteClient: async (id: number): Promise<void> => {
+    await api.delete(`/clients/${id}`);
   },
 
   downloadInvoicePdf: async (id: number): Promise<void> => {
