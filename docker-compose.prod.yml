@@ -1,0 +1,64 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-InvoiceDb}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # .NET Backend API
+  backend:
+    build:
+      context: ./src
+      dockerfile: CloudInvoiceApp.Backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__invoice-db: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-InvoiceDb};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
+      Jwt__SecretKey: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
+      Jwt__Issuer: CloudInvoiceApp
+      Jwt__Audience: CloudInvoiceApp
+      Google__ClientId: ${GOOGLE_CLIENT_ID}
+      AllowedOrigins: ${ALLOWED_ORIGINS:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Build frontend static files into a shared volume
+  frontend-build:
+    build:
+      context: ./src/CloudInvoiceApp.Web
+      dockerfile: Dockerfile
+      args:
+        VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+    volumes:
+      - frontend-dist:/output
+    entrypoint: ["sh", "-c", "cp -r /dist/* /output/"]
+
+  # Nginx — serves frontend + proxies API
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - frontend-dist:/usr/share/nginx/html:ro
+    depends_on:
+      backend:
+        condition: service_started
+      frontend-build:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-data:
+  frontend-dist:
