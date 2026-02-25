@@ -20,10 +20,14 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
   return (
     <aside className="flex h-full w-60 flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)]">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2.5 px-5">
-        <FileText className="h-6 w-6 text-[var(--color-accent)]" />
+      <div className="flex h-16 items-center gap-3 px-5">
+        <img
+          src="/invoice-pulse-icon.png"
+          alt="InvoicePulse"
+          className="h-10 w-10"
+        />
         <span className="text-lg font-semibold text-[var(--color-text)]">
-          CloudInvoice
+          InvoicePulse
         </span>
       </div>
 
@@ -42,7 +46,7 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
                   `flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-[var(--color-accent-light)] text-[var(--color-accent)]"
-                      : "text-[var(--color-text-secondary)] hover:bg-slate-100"
+                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-background)]"
                   }`
                 }
               >
@@ -63,7 +67,7 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
           <div className="flex items-center gap-3 rounded-md px-2 py-2">
             <button
               onClick={() => navigate("/profile")}
-              className="flex min-w-0 flex-1 items-center gap-3 rounded-md transition-colors hover:bg-slate-100 -ml-1 pl-1 py-0.5 pr-1"
+              className="flex min-w-0 flex-1 items-center gap-3 rounded-md transition-colors hover:bg-[var(--color-background)] -ml-1 pl-1 py-0.5 pr-1"
               title="View profile"
             >
               {user.pictureUrl ? (
@@ -94,7 +98,7 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
             </button>
             <button
               onClick={logout}
-              className="rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-slate-100 hover:text-[var(--color-destructive)]"
+              className="rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-background)] hover:text-[var(--color-destructive)]"
               title="Sign out"
             >
               <LogOut className="h-4 w-4" />

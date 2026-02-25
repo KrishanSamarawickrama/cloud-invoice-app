@@ -3,11 +3,14 @@ import { Plus, Trash2, User, Landmark, Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { ApiService } from "@/services/ApiService";
 
 export function ProfilePage() {
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [fromAddresses, setFromAddresses] = useState<string[]>([""]);
   const [accountHolder, setAccountHolder] = useState("");
   const [bankName, setBankName] = useState("");
@@ -68,10 +71,10 @@ export function ProfilePage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-2xl space-y-6">
-        <div className="h-8 w-32 animate-pulse rounded bg-slate-200" />
-        <div className="h-32 animate-pulse rounded-lg bg-slate-200" />
-        <div className="h-48 animate-pulse rounded-lg bg-slate-200" />
-        <div className="h-48 animate-pulse rounded-lg bg-slate-200" />
+        <div className="h-8 w-32 animate-pulse rounded bg-[var(--color-border)]" />
+        <div className="h-32 animate-pulse rounded-lg bg-[var(--color-border)]" />
+        <div className="h-48 animate-pulse rounded-lg bg-[var(--color-border)]" />
+        <div className="h-48 animate-pulse rounded-lg bg-[var(--color-border)]" />
       </div>
     );
   }
@@ -90,26 +93,39 @@ export function ProfilePage() {
 
       {/* User info card */}
       <div className="mb-6 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
-        <div className="flex items-center gap-4">
-          {user?.pictureUrl ? (
-            <img
-              src={user.pictureUrl}
-              alt={user.name}
-              className="h-16 w-16 rounded-full"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-accent)] text-lg font-medium text-white">
-              {initials}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {user?.pictureUrl ? (
+              <img
+                src={user.pictureUrl}
+                alt={user.name}
+                className="h-16 w-16 rounded-full"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-accent)] text-lg font-medium text-white">
+                {initials}
+              </div>
+            )}
+            <div>
+              <p className="text-lg font-semibold text-[var(--color-text)]">
+                {user?.name}
+              </p>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                {user?.email}
+              </p>
             </div>
-          )}
-          <div>
-            <p className="text-lg font-semibold text-[var(--color-text)]">
-              {user?.name}
-            </p>
-            <p className="text-sm text-[var(--color-text-secondary)]">
-              {user?.email}
-            </p>
+          </div>
+          <div className="min-w-40">
+            <Select
+              label="Theme"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value as "light" | "dark" | "system")}
+            >
+              <option value="system">System (Default)</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </Select>
           </div>
         </div>
       </div>
@@ -147,7 +163,7 @@ export function ProfilePage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] hover:bg-red-50"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)]"
                     onClick={() =>
                       setFromAddresses(fromAddresses.filter((_, j) => j !== i))
                     }

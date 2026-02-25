@@ -56,12 +56,22 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
+    var allowedOrigins = builder.Configuration["AllowedOrigins"]?
+        .Split(',', StringSplitOptions.RemoveEmptyEntries) ?? [];
+
     options.AddPolicy("AllowLocalhost",
-        policyBuilder => policyBuilder.WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials()
-            .WithExposedHeaders("Content-Disposition"));
+        policyBuilder =>
+        {
+            if (allowedOrigins.Length > 0)
+                policyBuilder.WithOrigins(allowedOrigins);
+            else
+                policyBuilder.AllowAnyOrigin();
+
+            policyBuilder.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .WithExposedHeaders("Content-Disposition");
+        });
 });
 
 builder.Services.AddOpenApi();
@@ -77,6 +87,8 @@ app.MapOpenApi();
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.UseCors("AllowLocalhost");
 
 app.UseAuthentication();
@@ -86,6 +98,9 @@ RunMigrations(app.Services);
 
 app.MapGet("/api/version", () => Results.Ok(new { Version = "v1.0.1", Tag = "20250224" }));
 app.UseFastEndpoints().UseSwaggerGen();
+
+// SPA fallback — serve index.html for all non-file routes (React Router)
+app.MapFallbackToFile("index.html");
 
 app.Run();
 

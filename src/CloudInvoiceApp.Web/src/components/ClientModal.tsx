@@ -132,7 +132,7 @@ export function ClientModal({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] hover:bg-red-50"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)]"
                       onClick={() =>
                         setAddressLines(addressLines.filter((_, j) => j !== i))
                       }
