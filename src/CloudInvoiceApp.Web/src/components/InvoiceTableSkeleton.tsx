@@ -5,7 +5,7 @@ export function InvoiceTableSkeleton() {
     <div className="overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-[var(--color-border)] bg-slate-50">
+          <tr className="border-b border-[var(--color-border)] bg-[var(--color-background)]">
             <th className="px-4 py-3 text-left font-medium text-[var(--color-text-secondary)]">
               Invoice #
             </th>

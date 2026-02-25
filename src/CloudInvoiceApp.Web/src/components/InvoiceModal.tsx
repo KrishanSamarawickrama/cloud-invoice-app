@@ -182,7 +182,7 @@ export function InvoiceModal({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] hover:bg-red-50"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] "
                         onClick={() => setFromAddresses(fromAddresses.filter((_, j) => j !== i))}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -222,7 +222,7 @@ export function InvoiceModal({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] hover:bg-red-50"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 text-[var(--color-destructive)] "
                         onClick={() => setToAddresses(toAddresses.filter((_, j) => j !== i))}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -250,7 +250,7 @@ export function InvoiceModal({
             <div className="mt-3 overflow-hidden rounded-md border border-[var(--color-border)]">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[var(--color-border)] bg-slate-50">
+                  <tr className="border-b border-[var(--color-border)] bg-[var(--color-background)]">
                     <th className="px-3 py-2 text-left font-medium text-[var(--color-text-secondary)]">
                       Service Name
                     </th>
@@ -265,7 +265,7 @@ export function InvoiceModal({
                     <tr key={i} className="border-b border-[var(--color-border)] last:border-b-0">
                       <td className="px-3 py-2">
                         <input
-                          className="w-full h-8 rounded-md border border-[var(--color-border)] bg-white px-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+                          className="w-full h-8 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] px-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
                           placeholder="Service name"
                           value={service.serviceName}
                           onChange={(e) => handleServiceChange(i, "serviceName", e.target.value)}
@@ -273,7 +273,7 @@ export function InvoiceModal({
                       </td>
                       <td className="px-3 py-2">
                         <input
-                          className="w-full h-8 rounded-md border border-[var(--color-border)] bg-white px-2 text-sm text-right focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+                          className="w-full h-8 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] px-2 text-sm text-right focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
                           type="number"
                           placeholder="0.00"
                           value={service.amount || ""}
@@ -284,7 +284,7 @@ export function InvoiceModal({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-[var(--color-destructive)] hover:bg-red-50"
+                          className="text-[var(--color-destructive)] "
                           onClick={() => setServices(services.filter((_, j) => j !== i))}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -294,7 +294,7 @@ export function InvoiceModal({
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-slate-50">
+                  <tr className="bg-[var(--color-background)]">
                     <td className="px-3 py-2 text-right font-medium text-[var(--color-text)]">
                       Total
                     </td>

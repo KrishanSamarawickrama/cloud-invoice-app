@@ -30,6 +30,7 @@ export const DialogContent = React.forwardRef<
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
+      onPointerDownOutside={(e) => e.preventDefault()}
       className={cn(
         "fixed left-1/2 top-1/2 z-50 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2",
         "max-h-[85vh] overflow-y-auto rounded-lg border border-[var(--color-border)]",
@@ -42,7 +43,7 @@ export const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm p-1 text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]">
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm p-1 text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-background)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>

@@ -38,10 +38,10 @@ function StatCardSkeleton() {
   return (
     <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
       <div className="flex items-center justify-between">
-        <div className="h-4 w-24 animate-pulse rounded bg-slate-200" />
-        <div className="h-8 w-8 animate-pulse rounded-md bg-slate-200" />
+        <div className="h-4 w-24 animate-pulse rounded bg-[var(--color-border)]" />
+        <div className="h-8 w-8 animate-pulse rounded-md bg-[var(--color-border)]" />
       </div>
-      <div className="mt-2 h-7 w-32 animate-pulse rounded bg-slate-200" />
+      <div className="mt-2 h-7 w-32 animate-pulse rounded bg-[var(--color-border)]" />
     </div>
   );
 }
@@ -143,9 +143,9 @@ export function DashboardPage() {
           <div className="divide-y divide-[var(--color-border)]">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="flex items-center justify-between px-5 py-3">
-                <div className="h-4 w-28 animate-pulse rounded bg-slate-200" />
-                <div className="h-4 w-24 animate-pulse rounded bg-slate-200" />
-                <div className="h-4 w-20 animate-pulse rounded bg-slate-200" />
+                <div className="h-4 w-28 animate-pulse rounded bg-[var(--color-border)]" />
+                <div className="h-4 w-24 animate-pulse rounded bg-[var(--color-border)]" />
+                <div className="h-4 w-20 animate-pulse rounded bg-[var(--color-border)]" />
               </div>
             ))}
           </div>

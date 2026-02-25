@@ -403,3 +403,5 @@ FodyWeavers.xsd
 
 /appsettings.local.json
 src/CloudInvoiceApp.Backend/appsettings.local.json
+CLAUDE.md
+/.claude

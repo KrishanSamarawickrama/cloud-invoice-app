@@ -3,13 +3,13 @@ import { cn } from "@/lib/utils";
 
 const variants = {
   primary:
-    "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] focus-visible:ring-[var(--color-accent)]",
+    "bg-[var(--color-accent)] text-black hover:bg-[var(--color-accent-hover)] focus-visible:ring-[var(--color-accent)]",
   secondary:
-    "bg-[var(--color-accent-light)] text-[var(--color-accent)] hover:bg-blue-100 focus-visible:ring-[var(--color-accent)]",
+    "bg-[var(--color-accent-light)] text-[var(--color-accent)] hover:bg-[var(--color-accent-light)] focus-visible:ring-[var(--color-accent)]",
   outline:
-    "border border-[var(--color-border)] bg-white text-[var(--color-text)] hover:bg-slate-50 focus-visible:ring-[var(--color-accent)]",
+    "border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-background)] focus-visible:ring-[var(--color-accent)]",
   ghost:
-    "text-[var(--color-text-secondary)] hover:bg-slate-100 focus-visible:ring-[var(--color-accent)]",
+    "text-[var(--color-text-secondary)] hover:bg-[var(--color-background)] focus-visible:ring-[var(--color-accent)]",
   destructive:
     "bg-[var(--color-destructive)] text-white hover:bg-[var(--color-destructive-hover)] focus-visible:ring-[var(--color-destructive)]",
 } as const;

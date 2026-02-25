@@ -20,7 +20,7 @@ export function InvoiceTable({
     <div className="overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-[var(--color-border)] bg-slate-50">
+          <tr className="border-b border-[var(--color-border)] bg-[var(--color-background)]">
             <th className="px-4 py-3 text-left font-medium text-[var(--color-text-secondary)]">
               Invoice #
             </th>
@@ -42,7 +42,7 @@ export function InvoiceTable({
           {invoices.map((invoice) => (
             <tr
               key={invoice.id}
-              className="border-b border-[var(--color-border)] last:border-b-0 hover:bg-slate-50 transition-colors"
+              className="border-b border-[var(--color-border)] last:border-b-0 hover:bg-[var(--color-background)] transition-colors"
             >
               <td className="px-4 py-3 font-medium text-[var(--color-text)]">
                 {invoice.invoiceNumber}
@@ -79,7 +79,7 @@ export function InvoiceTable({
                     size="icon"
                     onClick={() => onDelete(invoice)}
                     title="Delete invoice"
-                    className="text-[var(--color-destructive)] hover:bg-red-50"
+                    className="text-[var(--color-destructive)]"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

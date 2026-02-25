@@ -123,7 +123,7 @@ export function InvoiceManager() {
           placeholder="Search invoices..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="h-9 w-full rounded-md border border-[var(--color-border)] bg-white pl-9 pr-8 text-sm placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+          className="h-9 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] pl-9 pr-8 text-sm placeholder:text-[var(--color-text-muted)] placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
         />
         {searchQuery && (
           <button

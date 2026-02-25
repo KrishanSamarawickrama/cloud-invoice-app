@@ -39,7 +39,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         value={formatDate(value)}
         onChange={(e) => onChange(new Date(e.target.value).toISOString())}
         className={cn(
-          "h-9 w-full rounded-md border border-[var(--color-border)] bg-white px-3 text-sm",
+          "h-9 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text)]",
           "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1",
           className
         )}

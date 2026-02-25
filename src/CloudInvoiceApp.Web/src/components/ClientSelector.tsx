@@ -33,7 +33,7 @@ export function ClientSelector({ onSelect }: ClientSelectorProps) {
     <select
       defaultValue=""
       onChange={handleChange}
-      className="h-8 rounded-md border border-[var(--color-border)] bg-white px-2 text-xs text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+      className="h-8 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2 text-xs text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
     >
       <option value="" disabled>
         Load from client...
