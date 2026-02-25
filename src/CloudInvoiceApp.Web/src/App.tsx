@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "sonner";
@@ -10,12 +11,39 @@ import { InvoicesPage } from "@/pages/InvoicesPage";
 import { ClientsPage } from "@/pages/ClientsPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { ProfilePage } from "@/pages/ProfilePage";
-
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+import { getAppConfig } from "@/services/ConfigService";
 
 export default function App() {
+  const [googleClientId, setGoogleClientId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const config = await getAppConfig();
+        setGoogleClientId(config.googleClientId);
+      } catch (error) {
+        console.error("Failed to load app config:", error);
+        // Set empty client ID on error - app will still work but Google login won't
+        setGoogleClientId("");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadConfig();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[var(--color-background)]">
+        <div className="text-[var(--color-text-muted)]">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={googleClientId || ""}>
       <ThemeProvider>
         <BrowserRouter>
           <AuthProvider>
