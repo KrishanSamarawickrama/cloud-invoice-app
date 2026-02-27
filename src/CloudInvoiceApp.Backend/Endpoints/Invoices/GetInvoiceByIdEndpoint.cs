@@ -5,7 +5,7 @@ using CloudInvoiceApp.Backend.Requests;
 using CloudInvoiceApp.Backend.Responses;
 using FastEndpoints;
 
-namespace CloudInvoiceApp.Backend.Endpoints;
+namespace CloudInvoiceApp.Backend.Endpoints.Invoices;
 
 public class GetInvoiceByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
 {

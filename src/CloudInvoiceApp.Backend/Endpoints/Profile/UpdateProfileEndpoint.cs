@@ -2,11 +2,12 @@ using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Requests;
+using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
 namespace CloudInvoiceApp.Backend.Endpoints.Profile;
 
-public class UpdateProfileEndpoint(InvoiceDbContext dbContext) : Endpoint<UpdateProfileRequest>
+public class UpdateProfileEndpoint(InvoiceDbContext dbContext, IAuditService auditService) : Endpoint<UpdateProfileRequest>
 {
     public override void Configure()
     {
@@ -34,6 +35,10 @@ public class UpdateProfileEndpoint(InvoiceDbContext dbContext) : Endpoint<Update
             : null;
 
         await dbContext.SaveChangesAsync(ct);
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await auditService.LogAsync(userId, "UPDATE_PROFILE", "User", userId, ipAddress: ipAddress);
+
         await SendOkAsync(ct);
     }
 }

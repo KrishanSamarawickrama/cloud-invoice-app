@@ -6,7 +6,7 @@ using CloudInvoiceApp.Backend.Responses;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
-namespace CloudInvoiceApp.Backend.Endpoints;
+namespace CloudInvoiceApp.Backend.Endpoints.Invoices;
 
 public class GetInvoiceListEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
 {

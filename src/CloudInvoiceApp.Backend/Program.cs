@@ -31,6 +31,7 @@ builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Goo
 
 // Register services
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;

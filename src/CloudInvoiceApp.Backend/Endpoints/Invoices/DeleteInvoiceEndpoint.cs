@@ -1,10 +1,11 @@
 using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
+using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
-namespace CloudInvoiceApp.Backend.Endpoints;
+namespace CloudInvoiceApp.Backend.Endpoints.Invoices;
 
-public class DeleteInvoiceEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
+public class DeleteInvoiceEndpoint(InvoiceDbContext dbContext, IAuditService auditService) : EndpointWithoutRequest
 {
     public override void Configure()
     {
@@ -26,6 +27,10 @@ public class DeleteInvoiceEndpoint(InvoiceDbContext dbContext) : EndpointWithout
 
         dbContext.Invoices.Remove(invoice);
         await dbContext.SaveChangesAsync(ct);
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await auditService.LogAsync(userId, "DELETE_INVOICE", "Invoice", id,
+            new { invoiceId = id }, ipAddress);
 
         await SendOkAsync(new { Message = "Invoice deleted successfully." }, ct);
     }

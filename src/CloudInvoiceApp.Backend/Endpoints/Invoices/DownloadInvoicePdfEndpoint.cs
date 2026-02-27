@@ -6,7 +6,7 @@ using CloudInvoiceApp.Backend.Requests;
 using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
-namespace CloudInvoiceApp.Backend.Endpoints;
+namespace CloudInvoiceApp.Backend.Endpoints.Invoices;
 
 public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
 {

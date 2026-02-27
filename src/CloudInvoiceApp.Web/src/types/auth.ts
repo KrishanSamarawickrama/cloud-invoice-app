@@ -7,7 +7,6 @@ export interface UserInfo {
 
 export interface AuthResponse {
   accessToken: string;
-  refreshToken: string;
   user: UserInfo;
 }
 

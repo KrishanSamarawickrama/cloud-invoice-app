@@ -3,11 +3,12 @@ using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Models;
 using CloudInvoiceApp.Backend.Requests;
+using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
-namespace CloudInvoiceApp.Backend.Endpoints;
+namespace CloudInvoiceApp.Backend.Endpoints.Invoices;
 
-public sealed class CreateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint<CreateInvoiceRequest>
+public sealed class CreateInvoiceEndpoint(InvoiceDbContext dbContext, IAuditService auditService) : Endpoint<CreateInvoiceRequest>
 {
     public override void Configure()
     {
@@ -33,6 +34,10 @@ public sealed class CreateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint
 
         dbContext.Invoices.Add(invoice);
         await dbContext.SaveChangesAsync(ct);
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await auditService.LogAsync(invoice.UserId, "CREATE_INVOICE", "Invoice", invoice.Id,
+            new { invoiceId = invoice.Id, invoiceNumber = invoice.InvoiceNumber, amount = invoice.InvoiceTotal }, ipAddress);
 
         await SendOkAsync(invoice, ct);
     }
