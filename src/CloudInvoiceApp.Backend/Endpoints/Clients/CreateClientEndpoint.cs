@@ -3,6 +3,7 @@ using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Models;
 using CloudInvoiceApp.Backend.Requests;
+using CloudInvoiceApp.Backend.Responses;
 using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
@@ -34,6 +35,15 @@ public sealed class CreateClientEndpoint(InvoiceDbContext dbContext, IAuditServi
         await auditService.LogAsync(client.UserId, "CREATE_CLIENT", "Client", client.Id,
             new { clientId = client.Id, name = client.Name }, ipAddress);
 
-        await Send.OkAsync(client, ct);
+        var response = new ClientResponse
+        {
+            Id = client.Id,
+            Name = client.Name,
+            Email = client.Email,
+            Address = JsonSerializer.Deserialize<List<string>>(client.Address) ?? [],
+            CreatedDate = client.CreatedDate
+        };
+
+        await Send.OkAsync(response, ct);
     }
 }

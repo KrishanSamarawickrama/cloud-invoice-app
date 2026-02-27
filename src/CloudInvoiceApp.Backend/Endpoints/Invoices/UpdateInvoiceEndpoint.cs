@@ -2,6 +2,7 @@ using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Requests;
+using CloudInvoiceApp.Backend.Responses;
 using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
@@ -41,6 +42,18 @@ public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext, IAuditService aud
         await auditService.LogAsync(userId, "UPDATE_INVOICE", "Invoice", invoice.Id,
             new { invoiceId = invoice.Id, invoiceNumber = invoice.InvoiceNumber }, ipAddress);
 
-        await Send.OkAsync(invoice, ct);
+        var response = new InvoiceResponse
+        {
+            Id = invoice.Id,
+            FileName = invoice.FileName,
+            InvoiceNumber = invoice.InvoiceNumber,
+            InvoiceDate = invoice.InvoiceDate,
+            From = JsonSerializer.Deserialize<List<string>>(invoice.From) ?? [],
+            To = JsonSerializer.Deserialize<List<string>>(invoice.To) ?? [],
+            BankDetails = JsonSerializer.Deserialize<BankDetails>(invoice.BankDetails)!,
+            Services = JsonSerializer.Deserialize<List<Service>>(invoice.Services)!
+        };
+
+        await Send.OkAsync(response, ct);
     }
 }

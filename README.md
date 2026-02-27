@@ -1,6 +1,6 @@
 # Cloud Invoice Application
 
-A cloud-based application for generating invoices tailored for consultant services. Built with a **React 19** frontend and an **ASP.NET Core 9 Minimal API** backend, deployed via Docker Compose with PostgreSQL.
+A cloud-based application for generating invoices tailored for consultant services. Built with a **React 19** frontend and an **ASP.NET Core 10 Minimal API** backend, deployed via Docker Compose with PostgreSQL.
 
 ---
 
@@ -20,7 +20,7 @@ A cloud-based application for generating invoices tailored for consultant servic
 | Layer      | Technology                                                  |
 | ---------- | ----------------------------------------------------------- |
 | Frontend   | React 19, TypeScript 5.7, Vite 6, Tailwind CSS 4, Radix UI / shadcn/ui |
-| Backend    | ASP.NET Core 9, FastEndpoints 5.33, Entity Framework Core 9 |
+| Backend    | ASP.NET Core 10, FastEndpoints 8.0, Entity Framework Core 10 |
 | Database   | PostgreSQL 16                                               |
 | Auth       | Google OAuth 2.0 + JWT (HS256)                              |
 | PDF        | QuestPDF                                                    |
@@ -34,7 +34,7 @@ A cloud-based application for generating invoices tailored for consultant servic
 
 - [Docker](https://www.docker.com/) and Docker Compose
 - [Node.js 22+](https://nodejs.org/) (for local frontend development)
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) (for local backend development)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (for local backend development)
 - A [Google Cloud Console](https://console.cloud.google.com/) project with OAuth 2.0 credentials
 
 ---

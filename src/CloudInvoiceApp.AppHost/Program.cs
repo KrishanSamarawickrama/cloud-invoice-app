@@ -17,7 +17,7 @@ var backend = builder.AddProject<Projects.CloudInvoiceApp_Backend>("backend")
     .WithReference(invoiceDb)
     .WaitFor(invoiceDb);
 
-var frontend = builder.AddNpmApp("frontend", "../CloudInvoiceApp.Web", "dev")
+var frontend = builder.AddViteApp("frontend", "../CloudInvoiceApp.Web")
     .WithReference(backend)
     .WaitFor(backend)
     .WithHttpEndpoint(port: 3000, env: "VITE_PORT")

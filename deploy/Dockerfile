@@ -1,7 +1,7 @@
 # =============================================================================
 # Stage 1: Build the .NET backend
 # =============================================================================
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS dotnet-build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS dotnet-build
 WORKDIR /src
 
 # Disable fallback package folders and telemetry
@@ -53,7 +53,7 @@ RUN npm run build
 # =============================================================================
 # Stage 3: Final runtime image
 # =============================================================================
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 # libgdiplus is required by QuestPDF for PDF generation

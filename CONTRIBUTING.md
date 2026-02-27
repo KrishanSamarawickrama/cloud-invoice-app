@@ -13,7 +13,7 @@ Thank you for your interest in contributing! Here's how you can help.
 
 ### Prerequisites
 
-- .NET 9 SDK
+- .NET 10 SDK
 - Node.js 22+
 - PostgreSQL 16 (or Docker)
 
