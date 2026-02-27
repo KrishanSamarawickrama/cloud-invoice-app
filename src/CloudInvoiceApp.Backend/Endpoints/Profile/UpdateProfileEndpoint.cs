@@ -11,6 +11,7 @@ public class UpdateProfileEndpoint(InvoiceDbContext dbContext) : Endpoint<Update
     public override void Configure()
     {
         Put("/api/profile");
+        Summary(s => s.Summary = "Update user profile");
     }
 
     public override async Task HandleAsync(UpdateProfileRequest req, CancellationToken ct)

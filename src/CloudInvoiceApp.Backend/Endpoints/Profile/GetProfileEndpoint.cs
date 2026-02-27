@@ -12,6 +12,7 @@ public class GetProfileEndpoint(InvoiceDbContext dbContext) : EndpointWithoutReq
     public override void Configure()
     {
         Get("/api/profile");
+        Summary(s => s.Summary = "Get user profile");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

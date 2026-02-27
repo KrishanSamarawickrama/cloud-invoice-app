@@ -40,6 +40,8 @@ services:
       Google__ClientId: ${GOOGLE_CLIENT_ID:?GOOGLE_CLIENT_ID is required}
       # CORS
       AllowedOrigins: ${ALLOWED_ORIGINS:-}
+      # Host validation
+      AllowedHosts: ${ALLOWED_HOSTS:-*}
     depends_on:
       postgres:
         condition: service_healthy

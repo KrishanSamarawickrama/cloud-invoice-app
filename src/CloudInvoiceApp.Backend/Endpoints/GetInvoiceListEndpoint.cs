@@ -13,6 +13,7 @@ public class GetInvoiceListEndpoint(InvoiceDbContext dbContext) : EndpointWithou
     public override void Configure()
     {
         Get("/api/invoices/list");
+        Summary(s => s.Summary = "List all invoices");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

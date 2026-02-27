@@ -13,6 +13,8 @@ public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWi
     public override void Configure()
     {
         Get("/api/invoices/{id:int}/pdf");
+        Summary(s => s.Summary = "Download invoice as PDF");
+        Options(x => x.RequireRateLimiting("pdf"));
     }
 
     public override async Task HandleAsync(CancellationToken ct)

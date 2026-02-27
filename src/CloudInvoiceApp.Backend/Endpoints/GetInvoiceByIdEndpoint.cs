@@ -12,6 +12,7 @@ public class GetInvoiceByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithou
     public override void Configure()
     {
         Get("/api/invoices/{id:int}");
+        Summary(s => s.Summary = "Get invoice by ID");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

@@ -11,6 +11,7 @@ public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint<Update
     public override void Configure()
     {
         Put("/api/invoices");
+        Summary(s => s.Summary = "Update an existing invoice");
     }
 
     public override async Task HandleAsync(UpdateInvoiceRequest req, CancellationToken ct)

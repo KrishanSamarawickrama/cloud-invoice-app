@@ -18,6 +18,8 @@ public class RefreshTokenEndpoint(
     {
         Post("/api/auth/refresh");
         AllowAnonymous();
+        Summary(s => s.Summary = "Refresh access token");
+        Options(x => x.RequireRateLimiting("auth"));
     }
 
     public override async Task HandleAsync(RefreshTokenRequest req, CancellationToken ct)

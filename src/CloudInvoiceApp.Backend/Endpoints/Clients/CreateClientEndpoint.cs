@@ -12,6 +12,7 @@ public sealed class CreateClientEndpoint(InvoiceDbContext dbContext) : Endpoint<
     public override void Configure()
     {
         Post("/api/clients");
+        Summary(s => s.Summary = "Create a new client");
     }
 
     public override async Task HandleAsync(CreateClientRequest req, CancellationToken ct)

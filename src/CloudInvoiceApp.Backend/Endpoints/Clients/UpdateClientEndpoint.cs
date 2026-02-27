@@ -11,6 +11,7 @@ public class UpdateClientEndpoint(InvoiceDbContext dbContext) : Endpoint<UpdateC
     public override void Configure()
     {
         Put("/api/clients");
+        Summary(s => s.Summary = "Update a client");
     }
 
     public override async Task HandleAsync(UpdateClientRequest req, CancellationToken ct)

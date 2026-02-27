@@ -9,6 +9,7 @@ public class DeleteClientEndpoint(InvoiceDbContext dbContext) : EndpointWithoutR
     public override void Configure()
     {
         Delete("/api/clients/{id:int}");
+        Summary(s => s.Summary = "Delete a client");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

@@ -21,6 +21,8 @@ public class GoogleLoginEndpoint(
     {
         Post("/api/auth/google");
         AllowAnonymous();
+        Summary(s => s.Summary = "Authenticate via Google OAuth");
+        Options(x => x.RequireRateLimiting("auth"));
     }
 
     public override async Task HandleAsync(GoogleLoginRequest req, CancellationToken ct)

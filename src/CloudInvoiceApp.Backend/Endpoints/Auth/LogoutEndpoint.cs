@@ -10,6 +10,7 @@ public class LogoutEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
     public override void Configure()
     {
         Post("/api/auth/logout");
+        Summary(s => s.Summary = "Logout and invalidate refresh token");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
