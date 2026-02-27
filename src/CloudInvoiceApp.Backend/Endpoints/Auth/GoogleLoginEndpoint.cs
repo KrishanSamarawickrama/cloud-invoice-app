@@ -14,13 +14,17 @@ namespace CloudInvoiceApp.Backend.Endpoints.Auth;
 public class GoogleLoginEndpoint(
     InvoiceDbContext dbContext,
     ITokenService tokenService,
+    IAuditService auditService,
     IOptions<GoogleSettings> googleSettings,
-    IOptions<JwtSettings> jwtSettings) : Endpoint<GoogleLoginRequest, AuthResponse>
+    IOptions<JwtSettings> jwtSettings,
+    IWebHostEnvironment env) : Endpoint<GoogleLoginRequest, AuthResponse>
 {
     public override void Configure()
     {
         Post("/api/auth/google");
         AllowAnonymous();
+        Summary(s => s.Summary = "Authenticate via Google OAuth");
+        Options(x => x.RequireRateLimiting("auth"));
     }
 
     public override async Task HandleAsync(GoogleLoginRequest req, CancellationToken ct)
@@ -71,10 +75,15 @@ public class GoogleLoginEndpoint(
 
         var accessToken = tokenService.GenerateAccessToken(user);
 
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await auditService.LogAsync(user.Id, "LOGIN", "User", user.Id,
+            new { email = user.Email, isNewUser = user.CreatedDate == user.LastLoginDate }, ipAddress);
+
+        CookieHelper.SetRefreshTokenCookie(HttpContext, refreshToken, jwtSettings.Value.RefreshTokenExpirationDays, env.IsDevelopment());
+
         await SendOkAsync(new AuthResponse
         {
             AccessToken = accessToken,
-            RefreshToken = refreshToken,
             User = new UserInfo
             {
                 Id = user.Id,

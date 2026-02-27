@@ -8,6 +8,7 @@ public class InvoiceDbContext(DbContextOptions<InvoiceDbContext> options) : DbCo
     public DbSet<Invoice> Invoices { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Client> Clients { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,6 +34,11 @@ public class InvoiceDbContext(DbContextOptions<InvoiceDbContext> options) : DbCo
                 .WithMany(u => u.Clients)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasIndex(a => new { a.UserId, a.Timestamp });
         });
     }
 }

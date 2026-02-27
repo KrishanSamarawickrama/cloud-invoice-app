@@ -1,6 +1,8 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using CloudInvoiceApp.Backend.Configuration;
 using CloudInvoiceApp.Backend.Data;
+using CloudInvoiceApp.Backend.Middleware;
 using CloudInvoiceApp.Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +31,7 @@ builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Goo
 
 // Register services
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
@@ -48,30 +51,76 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.FromSeconds(30)
     };
 });
 
 builder.Services.AddAuthorization();
 
+// CORS — fail-closed in production
 builder.Services.AddCors(options =>
 {
     var allowedOrigins = builder.Configuration["AllowedOrigins"]?
-        .Split(',', StringSplitOptions.RemoveEmptyEntries) ?? [];
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
 
     options.AddPolicy("AllowLocalhost",
         policyBuilder =>
         {
             if (allowedOrigins.Length > 0)
+            {
                 policyBuilder.WithOrigins(allowedOrigins);
+            }
+            else if (builder.Environment.IsDevelopment())
+            {
+                policyBuilder.WithOrigins("http://localhost:5173", "http://localhost:5174");
+            }
             else
-                policyBuilder.AllowAnyOrigin();
+            {
+                // Production with no configured origins: block all cross-origin requests
+                policyBuilder.WithOrigins("https://no-origin-configured.invalid");
+            }
 
             policyBuilder.AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()
                 .WithExposedHeaders("Content-Disposition");
         });
+});
+
+// Rate Limiting
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    // Global: 100 requests per minute per IP
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+
+    // Auth endpoints: 10 requests per minute per IP
+    options.AddPolicy("auth", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+
+    // PDF generation: 20 requests per minute per IP
+    options.AddPolicy("pdf", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1)
+            }));
 });
 
 builder.Services.AddOpenApi();
@@ -82,7 +131,39 @@ var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
-app.UseDeveloperExceptionPage();
+// Warn if CORS origins not configured in production
+if (!app.Environment.IsDevelopment())
+{
+    var configuredOrigins = app.Configuration["AllowedOrigins"]?
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+    if (configuredOrigins.Length == 0)
+    {
+        app.Logger.LogCritical("AllowedOrigins is not configured. CORS will block all cross-origin requests.");
+    }
+}
+
+// Exception handling
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(async context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new { error = "An unexpected error occurred." });
+        });
+    });
+    app.UseHsts();
+}
+
+// Security headers
+app.UseSecurityHeaders();
+
 app.MapOpenApi();
 
 app.UseHttpsRedirection();
@@ -90,6 +171,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseCors("AllowLocalhost");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

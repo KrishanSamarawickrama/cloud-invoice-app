@@ -10,6 +10,7 @@ public class MeEndpoint : EndpointWithoutRequest<UserInfo>
     public override void Configure()
     {
         Get("/api/auth/me");
+        Summary(s => s.Summary = "Get current user info");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

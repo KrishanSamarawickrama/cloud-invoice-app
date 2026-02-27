@@ -3,15 +3,17 @@ using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Models;
 using CloudInvoiceApp.Backend.Requests;
+using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
 namespace CloudInvoiceApp.Backend.Endpoints.Clients;
 
-public sealed class CreateClientEndpoint(InvoiceDbContext dbContext) : Endpoint<CreateClientRequest>
+public sealed class CreateClientEndpoint(InvoiceDbContext dbContext, IAuditService auditService) : Endpoint<CreateClientRequest>
 {
     public override void Configure()
     {
         Post("/api/clients");
+        Summary(s => s.Summary = "Create a new client");
     }
 
     public override async Task HandleAsync(CreateClientRequest req, CancellationToken ct)
@@ -27,6 +29,10 @@ public sealed class CreateClientEndpoint(InvoiceDbContext dbContext) : Endpoint<
 
         dbContext.Clients.Add(client);
         await dbContext.SaveChangesAsync(ct);
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await auditService.LogAsync(client.UserId, "CREATE_CLIENT", "Client", client.Id,
+            new { clientId = client.Id, name = client.Name }, ipAddress);
 
         await SendOkAsync(client, ct);
     }

@@ -1,15 +1,17 @@
 using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
+using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloudInvoiceApp.Backend.Endpoints.Auth;
 
-public class LogoutEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
+public class LogoutEndpoint(InvoiceDbContext dbContext, IAuditService auditService, IWebHostEnvironment env) : EndpointWithoutRequest
 {
     public override void Configure()
     {
         Post("/api/auth/logout");
+        Summary(s => s.Summary = "Logout and invalidate refresh token");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -23,6 +25,11 @@ public class LogoutEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
             user.RefreshTokenExpiryTime = null;
             await dbContext.SaveChangesAsync(ct);
         }
+
+        CookieHelper.ClearRefreshTokenCookie(HttpContext, env.IsDevelopment());
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await auditService.LogAsync(userId, "LOGOUT", "User", userId, ipAddress: ipAddress);
 
         await SendOkAsync(new { Message = "Logged out successfully." }, ct);
     }

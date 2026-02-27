@@ -19,8 +19,6 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const REFRESH_TOKEN_KEY = "cloud_invoice_refresh_token";
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -29,23 +27,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const handleAuthResponse = useCallback((data: AuthResponse) => {
     setUser(data.user);
     setAccessToken(data.accessToken);
-    localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
   }, []);
 
   const clearAuth = useCallback(() => {
     setUser(null);
     setAccessToken(null);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
   }, []);
 
   const refreshAccessToken = useCallback(async (): Promise<string | null> => {
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-    if (!refreshToken) return null;
-
     try {
-      const response = await api.post<AuthResponse>("/auth/refresh", {
-        refreshToken,
-      });
+      const response = await api.post<AuthResponse>("/auth/refresh");
       handleAuthResponse(response.data);
       return response.data.accessToken;
     } catch {
@@ -63,13 +54,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
   }, [accessToken, refreshAccessToken, clearAuth]);
 
-  // Attempt session restore on mount
+  // Attempt session restore on mount (cookie sent automatically)
   useEffect(() => {
     const restore = async () => {
-      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-      if (refreshToken) {
-        await refreshAccessToken();
-      }
+      await refreshAccessToken();
       setIsLoading(false);
     };
     restore();

@@ -6,13 +6,15 @@ using CloudInvoiceApp.Backend.Requests;
 using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
-namespace CloudInvoiceApp.Backend.Endpoints;
+namespace CloudInvoiceApp.Backend.Endpoints.Invoices;
 
 public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
 {
     public override void Configure()
     {
         Get("/api/invoices/{id:int}/pdf");
+        Summary(s => s.Summary = "Download invoice as PDF");
+        Options(x => x.RequireRateLimiting("pdf"));
     }
 
     public override async Task HandleAsync(CancellationToken ct)
