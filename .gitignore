@@ -399,9 +399,17 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 .env
+
 /src/.idea
 
+# Local config with secrets
+*.local.json
 /appsettings.local.json
 src/CloudInvoiceApp.Backend/appsettings.local.json
+
+# Frontend build output
+src/CloudInvoiceApp.Web/dist/
+
+# Claude Code
 CLAUDE.md
 /.claude

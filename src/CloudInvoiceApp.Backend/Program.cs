@@ -55,7 +55,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 // CORS — fail-closed in production
 builder.Services.AddCors(options =>
@@ -123,9 +128,20 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 
-builder.Services.AddOpenApi();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddFastEndpoints().SwaggerDocument();
+// Request body size limit (10 MB)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 10 * 1024 * 1024;
+});
+
+builder.Services.AddFastEndpoints();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddOpenApi();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.SwaggerDocument();
+}
 
 var app = builder.Build();
 
@@ -164,7 +180,10 @@ else
 // Security headers
 app.UseSecurityHeaders();
 
-app.MapOpenApi();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
 
 app.UseHttpsRedirection();
 
@@ -179,11 +198,16 @@ app.UseAuthorization();
 
 RunMigrations(app.Services);
 
-app.MapGet("/api/version", () => Results.Ok(new { Version = "v1.0.1", Tag = "20250224" }));
-app.UseFastEndpoints().UseSwaggerGen();
+app.MapGet("/api/version", () => Results.Ok(new { Version = "v1.0.1", Tag = "20250224" })).AllowAnonymous();
+app.UseFastEndpoints();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerGen();
+}
 
 // SPA fallback — serve index.html for all non-file routes (React Router)
-app.MapFallbackToFile("index.html");
+app.MapFallbackToFile("index.html").AllowAnonymous();
 
 app.Run();
 
