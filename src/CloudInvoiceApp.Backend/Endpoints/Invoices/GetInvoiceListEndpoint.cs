@@ -32,6 +32,6 @@ public class GetInvoiceListEndpoint(InvoiceDbContext dbContext) : EndpointWithou
                 Amount = JsonSerializer.Deserialize<List<Service>>(x.Services)!.Sum(x=>x.Amount)
             });
 
-        await SendOkAsync(invoicesResponse, ct);
+        await Send.OkAsync(invoicesResponse, ct);
     }
 }

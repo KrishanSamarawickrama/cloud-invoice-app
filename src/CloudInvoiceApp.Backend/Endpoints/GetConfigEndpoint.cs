@@ -14,6 +14,6 @@ public class GetConfigEndpoint(IConfiguration configuration) : EndpointWithoutRe
     public override async Task HandleAsync(CancellationToken ct)
     {
         var googleClientId = configuration["Google:ClientId"] ?? "";
-        await SendOkAsync(new ConfigResponse { GoogleClientId = googleClientId }, ct);
+        await Send.OkAsync(new ConfigResponse { GoogleClientId = googleClientId }, ct);
     }
 }

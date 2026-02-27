@@ -23,7 +23,7 @@ public class GetInvoiceByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithou
 
         if (invoice is null || invoice.UserId != userId)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -39,6 +39,6 @@ public class GetInvoiceByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithou
             Services = JsonSerializer.Deserialize<List<Service>>(invoice.Services)!
         };
 
-        await SendOkAsync(invoiceResponse, ct);
+        await Send.OkAsync(invoiceResponse, ct);
     }
 }

@@ -22,7 +22,7 @@ public class UpdateClientEndpoint(InvoiceDbContext dbContext, IAuditService audi
 
         if (client is null || client.UserId != userId)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -36,6 +36,6 @@ public class UpdateClientEndpoint(InvoiceDbContext dbContext, IAuditService audi
         await auditService.LogAsync(userId, "UPDATE_CLIENT", "Client", client.Id,
             new { clientId = client.Id, name = client.Name }, ipAddress);
 
-        await SendOkAsync(client, ct);
+        await Send.OkAsync(client, ct);
     }
 }

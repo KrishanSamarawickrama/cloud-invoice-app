@@ -31,6 +31,6 @@ public class LogoutEndpoint(InvoiceDbContext dbContext, IAuditService auditServi
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
         await auditService.LogAsync(userId, "LOGOUT", "User", userId, ipAddress: ipAddress);
 
-        await SendOkAsync(new { Message = "Logged out successfully." }, ct);
+        await Send.OkAsync(new { Message = "Logged out successfully." }, ct);
     }
 }

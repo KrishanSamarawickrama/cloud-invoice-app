@@ -22,7 +22,7 @@ public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext, IAuditService aud
 
         if (invoice is null || invoice.UserId != userId)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -41,6 +41,6 @@ public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext, IAuditService aud
         await auditService.LogAsync(userId, "UPDATE_INVOICE", "Invoice", invoice.Id,
             new { invoiceId = invoice.Id, invoiceNumber = invoice.InvoiceNumber }, ipAddress);
 
-        await SendOkAsync(invoice, ct);
+        await Send.OkAsync(invoice, ct);
     }
 }

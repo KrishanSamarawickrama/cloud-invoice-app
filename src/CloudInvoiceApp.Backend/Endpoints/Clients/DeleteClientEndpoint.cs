@@ -21,7 +21,7 @@ public class DeleteClientEndpoint(InvoiceDbContext dbContext, IAuditService audi
 
         if (client is null || client.UserId != userId)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -32,6 +32,6 @@ public class DeleteClientEndpoint(InvoiceDbContext dbContext, IAuditService audi
         await auditService.LogAsync(userId, "DELETE_CLIENT", "Client", id,
             new { clientId = id }, ipAddress);
 
-        await SendOkAsync(new { Message = "Client deleted successfully." }, ct);
+        await Send.OkAsync(new { Message = "Client deleted successfully." }, ct);
     }
 }

@@ -39,6 +39,6 @@ public sealed class CreateInvoiceEndpoint(InvoiceDbContext dbContext, IAuditServ
         await auditService.LogAsync(invoice.UserId, "CREATE_INVOICE", "Invoice", invoice.Id,
             new { invoiceId = invoice.Id, invoiceNumber = invoice.InvoiceNumber, amount = invoice.InvoiceTotal }, ipAddress);
 
-        await SendOkAsync(invoice, ct);
+        await Send.OkAsync(invoice, ct);
     }
 }

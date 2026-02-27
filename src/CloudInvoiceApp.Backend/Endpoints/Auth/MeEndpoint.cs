@@ -20,7 +20,7 @@ public class MeEndpoint : EndpointWithoutRequest<UserInfo>
             ?? User.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? "0");
 
-        await SendOkAsync(new UserInfo
+        await Send.OkAsync(new UserInfo
         {
             Id = userId,
             Email = User.FindFirstValue(JwtRegisteredClaimNames.Email)

@@ -40,7 +40,7 @@ public class GoogleLoginEndpoint(
         }
         catch (InvalidJwtException)
         {
-            await SendUnauthorizedAsync(ct);
+            await Send.UnauthorizedAsync(ct);
             return;
         }
 
@@ -81,7 +81,7 @@ public class GoogleLoginEndpoint(
 
         CookieHelper.SetRefreshTokenCookie(HttpContext, refreshToken, jwtSettings.Value.RefreshTokenExpirationDays, env.IsDevelopment());
 
-        await SendOkAsync(new AuthResponse
+        await Send.OkAsync(new AuthResponse
         {
             AccessToken = accessToken,
             User = new UserInfo

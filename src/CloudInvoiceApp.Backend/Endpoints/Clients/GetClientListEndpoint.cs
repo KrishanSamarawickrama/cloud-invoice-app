@@ -27,6 +27,6 @@ public class GetClientListEndpoint(InvoiceDbContext dbContext) : EndpointWithout
             })
             .ToListAsync(ct);
 
-        await SendOkAsync(clients, ct);
+        await Send.OkAsync(clients, ct);
     }
 }
