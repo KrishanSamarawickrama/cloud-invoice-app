@@ -11,7 +11,7 @@ public class SecurityHeadersMiddleware(RequestDelegate next)
         headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
         headers["Content-Security-Policy"] =
             "default-src 'self'; " +
-            "script-src 'self' https://static.cloudflareinsights.com; " +
+            "script-src 'self' https://static.cloudflareinsights.com https://accounts.google.com; " +
             "style-src 'self' 'unsafe-inline'; " +
             "img-src 'self' data: https://lh3.googleusercontent.com; " +
             "font-src 'self'; " +
