@@ -11,6 +11,7 @@ public class GetClientListEndpoint(InvoiceDbContext dbContext) : EndpointWithout
     public override void Configure()
     {
         Get("/api/clients");
+        Summary(s => s.Summary = "List all clients");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

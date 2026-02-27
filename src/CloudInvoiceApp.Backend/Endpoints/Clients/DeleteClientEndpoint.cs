@@ -1,14 +1,16 @@
 using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
+using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
 namespace CloudInvoiceApp.Backend.Endpoints.Clients;
 
-public class DeleteClientEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
+public class DeleteClientEndpoint(InvoiceDbContext dbContext, IAuditService auditService) : EndpointWithoutRequest
 {
     public override void Configure()
     {
         Delete("/api/clients/{id:int}");
+        Summary(s => s.Summary = "Delete a client");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -25,6 +27,10 @@ public class DeleteClientEndpoint(InvoiceDbContext dbContext) : EndpointWithoutR
 
         dbContext.Clients.Remove(client);
         await dbContext.SaveChangesAsync(ct);
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await auditService.LogAsync(userId, "DELETE_CLIENT", "Client", id,
+            new { clientId = id }, ipAddress);
 
         await SendOkAsync(new { Message = "Client deleted successfully." }, ct);
     }

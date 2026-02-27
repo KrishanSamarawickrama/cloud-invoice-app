@@ -5,13 +5,14 @@ using CloudInvoiceApp.Backend.Requests;
 using CloudInvoiceApp.Backend.Responses;
 using FastEndpoints;
 
-namespace CloudInvoiceApp.Backend.Endpoints;
+namespace CloudInvoiceApp.Backend.Endpoints.Invoices;
 
 public class GetInvoiceByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithoutRequest
 {
     public override void Configure()
     {
         Get("/api/invoices/{id:int}");
+        Summary(s => s.Summary = "Get invoice by ID");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

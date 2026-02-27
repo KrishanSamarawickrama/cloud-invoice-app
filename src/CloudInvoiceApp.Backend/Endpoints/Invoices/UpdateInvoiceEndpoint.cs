@@ -2,15 +2,17 @@ using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
 using CloudInvoiceApp.Backend.Requests;
+using CloudInvoiceApp.Backend.Services;
 using FastEndpoints;
 
-namespace CloudInvoiceApp.Backend.Endpoints;
+namespace CloudInvoiceApp.Backend.Endpoints.Invoices;
 
-public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint<UpdateInvoiceRequest>
+public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext, IAuditService auditService) : Endpoint<UpdateInvoiceRequest>
 {
     public override void Configure()
     {
         Put("/api/invoices");
+        Summary(s => s.Summary = "Update an existing invoice");
     }
 
     public override async Task HandleAsync(UpdateInvoiceRequest req, CancellationToken ct)
@@ -34,6 +36,11 @@ public class UpdateInvoiceEndpoint(InvoiceDbContext dbContext) : Endpoint<Update
         invoice.InvoiceTotal = req.Services.Sum(x => x.Amount);
 
         await dbContext.SaveChangesAsync(ct);
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await auditService.LogAsync(userId, "UPDATE_INVOICE", "Invoice", invoice.Id,
+            new { invoiceId = invoice.Id, invoiceNumber = invoice.InvoiceNumber }, ipAddress);
+
         await SendOkAsync(invoice, ct);
     }
 }
