@@ -22,7 +22,7 @@ public class GetClientByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithout
 
         if (client is null || client.UserId != userId)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -35,6 +35,6 @@ public class GetClientByIdEndpoint(InvoiceDbContext dbContext) : EndpointWithout
             CreatedDate = client.CreatedDate
         };
 
-        await SendOkAsync(response, ct);
+        await Send.OkAsync(response, ct);
     }
 }

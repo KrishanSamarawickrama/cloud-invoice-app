@@ -22,7 +22,7 @@ public class UpdateProfileEndpoint(InvoiceDbContext dbContext, IAuditService aud
 
         if (user is null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -39,6 +39,6 @@ public class UpdateProfileEndpoint(InvoiceDbContext dbContext, IAuditService aud
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
         await auditService.LogAsync(userId, "UPDATE_PROFILE", "User", userId, ipAddress: ipAddress);
 
-        await SendOkAsync(ct);
+        await Send.OkAsync(ct);
     }
 }

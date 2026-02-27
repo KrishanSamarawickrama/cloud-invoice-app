@@ -25,7 +25,7 @@ public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWi
 
         if (invoice is null || invoice.UserId != userId)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -41,7 +41,7 @@ public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWi
 
         var fileName = BuildFileName(from, invoice.InvoiceDate, invoice.InvoiceNumber);
 
-        await SendBytesAsync(pdfBytes, fileName, "application/pdf", cancellation: ct);
+        await Send.BytesAsync(pdfBytes, fileName, "application/pdf", cancellation: ct);
     }
 
     private static string BuildFileName(List<string> from, string invoiceDate, string invoiceNumber)

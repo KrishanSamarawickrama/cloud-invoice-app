@@ -22,7 +22,7 @@ public class GetProfileEndpoint(InvoiceDbContext dbContext) : EndpointWithoutReq
 
         if (user is null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -39,6 +39,6 @@ public class GetProfileEndpoint(InvoiceDbContext dbContext) : EndpointWithoutReq
                 : null
         };
 
-        await SendOkAsync(response, ct);
+        await Send.OkAsync(response, ct);
     }
 }

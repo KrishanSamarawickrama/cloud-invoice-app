@@ -34,6 +34,6 @@ public sealed class CreateClientEndpoint(InvoiceDbContext dbContext, IAuditServi
         await auditService.LogAsync(client.UserId, "CREATE_CLIENT", "Client", client.Id,
             new { clientId = client.Id, name = client.Name }, ipAddress);
 
-        await SendOkAsync(client, ct);
+        await Send.OkAsync(client, ct);
     }
 }

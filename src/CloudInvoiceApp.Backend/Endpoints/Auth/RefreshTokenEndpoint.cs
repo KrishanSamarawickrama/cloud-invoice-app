@@ -28,7 +28,7 @@ public class RefreshTokenEndpoint(
 
         if (string.IsNullOrEmpty(refreshToken))
         {
-            await SendUnauthorizedAsync(ct);
+            await Send.UnauthorizedAsync(ct);
             return;
         }
 
@@ -38,7 +38,7 @@ public class RefreshTokenEndpoint(
         if (user is null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
         {
             CookieHelper.ClearRefreshTokenCookie(HttpContext, env.IsDevelopment());
-            await SendUnauthorizedAsync(ct);
+            await Send.UnauthorizedAsync(ct);
             return;
         }
 
@@ -52,7 +52,7 @@ public class RefreshTokenEndpoint(
 
         CookieHelper.SetRefreshTokenCookie(HttpContext, newRefreshToken, jwtSettings.Value.RefreshTokenExpirationDays, env.IsDevelopment());
 
-        await SendOkAsync(new AuthResponse
+        await Send.OkAsync(new AuthResponse
         {
             AccessToken = newAccessToken,
             User = new UserInfo
