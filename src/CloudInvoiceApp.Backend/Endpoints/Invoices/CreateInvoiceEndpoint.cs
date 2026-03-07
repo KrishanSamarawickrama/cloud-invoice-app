@@ -21,7 +21,9 @@ public sealed class CreateInvoiceEndpoint(InvoiceDbContext dbContext, IAuditServ
     {
         var invoice = new Invoice
         {
-            FileName = req.FileName,
+            FileName = string.IsNullOrEmpty(req.FileName)
+                ? InvoicePdfGenerator.BuildFileName(req.From, req.InvoiceDate.ToString("yyyy-MM-dd"), req.InvoiceNumber)
+                : req.FileName,
             InvoiceDate = req.InvoiceDate.ToString("yyyy-MM-dd"),
             InvoiceNumber = req.InvoiceNumber,
             From = JsonSerializer.Serialize(req.From),

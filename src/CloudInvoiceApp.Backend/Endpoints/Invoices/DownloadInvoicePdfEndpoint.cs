@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text.Json;
 using CloudInvoiceApp.Backend.Data;
 using CloudInvoiceApp.Backend.Extensions;
@@ -39,35 +38,8 @@ public class DownloadInvoicePdfEndpoint(InvoiceDbContext dbContext) : EndpointWi
             invoice.InvoiceDate,
             from, to, bankDetails, services);
 
-        var fileName = BuildFileName(from, invoice.InvoiceDate, invoice.InvoiceNumber);
+        var fileName = invoice.FileName ?? InvoicePdfGenerator.BuildFileName(from, invoice.InvoiceDate, invoice.InvoiceNumber);
 
         await Send.BytesAsync(pdfBytes, fileName, "application/pdf", cancellation: ct);
-    }
-
-    private static string BuildFileName(List<string> from, string invoiceDate, string invoiceNumber)
-    {
-        var firstName = "Invoice";
-        if (from.Count > 0 && !string.IsNullOrWhiteSpace(from[0]))
-        {
-            firstName = from[0].Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
-        }
-
-        var month = "Unknown";
-        var year = DateTime.Now.Year.ToString();
-
-        if (DateOnly.TryParseExact(invoiceDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d1))
-        {
-            month = d1.ToString("MMMM", CultureInfo.InvariantCulture);
-            year = d1.Year.ToString();
-        }
-        else if (DateOnly.TryParseExact(invoiceDate, "MMMM dd, yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d2))
-        {
-            month = d2.ToString("MMMM", CultureInfo.InvariantCulture);
-            year = d2.Year.ToString();
-        }
-
-        var cleanNumber = invoiceNumber.Replace("-", "").Replace(" ", "");
-
-        return $"{firstName}-{month}-{year}-{cleanNumber}.pdf";
     }
 }

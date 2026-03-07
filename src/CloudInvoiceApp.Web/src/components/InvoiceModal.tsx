@@ -46,6 +46,7 @@ export function InvoiceModal({
   const [bankName, setBankName] = useState(initialData?.bankDetails?.bankName || "");
   const [accountNumber, setAccountNumber] = useState(initialData?.bankDetails?.accountNumber || "");
   const [swiftCode, setSwiftCode] = useState(initialData?.bankDetails?.swiftCode || "");
+  const [fileName, setFileName] = useState(initialData?.fileName ?? "");
   const [isSaving, setIsSaving] = useState(false);
 
   // Pre-populate from profile defaults when creating a new invoice
@@ -107,7 +108,7 @@ export function InvoiceModal({
     setIsSaving(true);
     try {
       if (initialData?.id) {
-        const req: UpdateInvoiceRequest = { id: initialData.id, ...invoiceData };
+        const req: UpdateInvoiceRequest = { id: initialData.id, ...invoiceData, fileName: fileName || null };
         await ApiService.updateInvoice(req);
       } else {
         const req: CreateInvoiceRequest = invoiceData;
@@ -152,6 +153,16 @@ export function InvoiceModal({
                 onChange={setInvoiceDate}
               />
             </div>
+            {initialData && (
+              <div className="mt-3">
+                <Input
+                  label="File Name"
+                  value={fileName}
+                  onChange={(e) => setFileName(e.target.value)}
+                  placeholder="Auto-generated on PDF download"
+                />
+              </div>
+            )}
           </section>
 
           {/* From & To side by side */}
