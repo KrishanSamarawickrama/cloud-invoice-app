@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   DollarSign,
   FileText,
@@ -14,34 +15,40 @@ interface StatCardProps {
   label: string;
   value: string;
   icon: React.ElementType;
+  index: number;
 }
 
-function StatCard({ label, value, icon: Icon }: StatCardProps) {
+function StatCard({ label, value, icon: Icon, index }: StatCardProps) {
   return (
-    <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.08, ease: "easeOut" }}
+      className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm transition-shadow duration-200 hover:shadow-md"
+    >
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-[var(--color-text-secondary)]">
           {label}
         </p>
-        <div className="rounded-md bg-[var(--color-accent-light)] p-2">
+        <div className="rounded-xl bg-[var(--color-accent-light)] p-2.5">
           <Icon className="h-4 w-4 text-[var(--color-accent)]" />
         </div>
       </div>
-      <p className="mt-2 text-2xl font-semibold text-[var(--color-text)]">
+      <p className="mt-2 text-3xl font-semibold text-[var(--color-text)]">
         {value}
       </p>
-    </div>
+    </motion.div>
   );
 }
 
 function StatCardSkeleton() {
   return (
-    <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
       <div className="flex items-center justify-between">
-        <div className="h-4 w-24 animate-pulse rounded bg-[var(--color-border)]" />
-        <div className="h-8 w-8 animate-pulse rounded-md bg-[var(--color-border)]" />
+        <div className="h-4 w-24 animate-pulse rounded-lg bg-[var(--color-border)]/60" />
+        <div className="h-9 w-9 animate-pulse rounded-xl bg-[var(--color-border)]/60" />
       </div>
-      <div className="mt-2 h-7 w-32 animate-pulse rounded bg-[var(--color-border)]" />
+      <div className="mt-2 h-8 w-32 animate-pulse rounded-lg bg-[var(--color-border)]/60" />
     </div>
   );
 }
@@ -86,7 +93,7 @@ export function DashboardPage() {
     <>
       {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
           Dashboard
         </h1>
         <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
@@ -104,28 +111,32 @@ export function DashboardPage() {
               label="Total Revenue"
               value={formatCurrency(stats.totalRevenue)}
               icon={DollarSign}
+              index={0}
             />
             <StatCard
               label="Total Invoices"
               value={String(stats.totalInvoices)}
               icon={FileText}
+              index={1}
             />
             <StatCard
               label="Average Invoice"
               value={formatCurrency(stats.averageInvoice)}
               icon={TrendingUp}
+              index={2}
             />
             <StatCard
               label="This Month"
               value={formatCurrency(stats.thisMonthRevenue)}
               icon={Calendar}
+              index={3}
             />
           </>
         )}
       </div>
 
       {/* Recent invoices */}
-      <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
+      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
         <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
           <h2 className="text-base font-semibold text-[var(--color-text)]">
             Recent Invoices
@@ -143,9 +154,9 @@ export function DashboardPage() {
           <div className="divide-y divide-[var(--color-border)]">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="flex items-center justify-between px-5 py-3">
-                <div className="h-4 w-28 animate-pulse rounded bg-[var(--color-border)]" />
-                <div className="h-4 w-24 animate-pulse rounded bg-[var(--color-border)]" />
-                <div className="h-4 w-20 animate-pulse rounded bg-[var(--color-border)]" />
+                <div className="h-4 w-28 animate-pulse rounded-lg bg-[var(--color-border)]/60" />
+                <div className="h-4 w-24 animate-pulse rounded-lg bg-[var(--color-border)]/60" />
+                <div className="h-4 w-20 animate-pulse rounded-lg bg-[var(--color-border)]/60" />
               </div>
             ))}
           </div>
@@ -164,7 +175,7 @@ export function DashboardPage() {
             </thead>
             <tbody className="divide-y divide-[var(--color-border)]">
               {recentInvoices.map((inv) => (
-                <tr key={inv.id} className="text-sm">
+                <tr key={inv.id} className="text-sm transition-colors hover:bg-[var(--color-accent-light)]/50">
                   <td className="px-5 py-3 font-medium text-[var(--color-text)]">
                     {inv.invoiceNumber}
                   </td>

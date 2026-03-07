@@ -18,9 +18,9 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
   const navigate = useNavigate();
 
   return (
-    <aside className="flex h-full w-60 flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)]">
+    <aside className="flex h-full w-64 flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)]">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-3 px-5">
+      <div className="flex h-[4.5rem] items-center gap-3 border-b border-[var(--color-border)] px-6">
         <img
           src="/invoice-pulse-icon.png"
           alt="InvoicePulse"
@@ -43,10 +43,10 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? "bg-[var(--color-accent-light)] text-[var(--color-accent)]"
-                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-background)]"
+                      ? "border-l-[3px] border-[var(--color-accent)] bg-[var(--color-accent-light)] text-[var(--color-accent)] pl-[9px]"
+                      : "border-l-[3px] border-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-background)] pl-[9px]"
                   }`
                 }
               >
@@ -64,10 +64,10 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
       {/* User Profile */}
       {user && (
         <div className="border-t border-[var(--color-border)] p-3">
-          <div className="flex items-center gap-3 rounded-md px-2 py-2">
+          <div className="flex items-center gap-3 rounded-lg bg-[var(--color-background)]/50 px-2 py-2">
             <button
               onClick={() => navigate("/profile")}
-              className="flex min-w-0 flex-1 items-center gap-3 rounded-md transition-colors hover:bg-[var(--color-background)] -ml-1 pl-1 py-0.5 pr-1"
+              className="flex min-w-0 flex-1 items-center gap-3 rounded-lg transition-all duration-200 hover:bg-[var(--color-background)] -ml-1 pl-1 py-0.5 pr-1"
               title="View profile"
             >
               {user.pictureUrl ? (
@@ -98,7 +98,7 @@ export function Sidebar({ invoiceCount }: SidebarProps) {
             </button>
             <button
               onClick={logout}
-              className="rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-background)] hover:text-[var(--color-destructive)]"
+              className="rounded-lg p-1.5 text-[var(--color-text-muted)] transition-all duration-200 hover:bg-[var(--color-background)] hover:text-[var(--color-destructive)]"
               title="Sign out"
             >
               <LogOut className="h-4 w-4" />

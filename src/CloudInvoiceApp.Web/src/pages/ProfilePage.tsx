@@ -71,10 +71,10 @@ export function ProfilePage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-2xl space-y-6">
-        <div className="h-8 w-32 animate-pulse rounded bg-[var(--color-border)]" />
-        <div className="h-32 animate-pulse rounded-lg bg-[var(--color-border)]" />
-        <div className="h-48 animate-pulse rounded-lg bg-[var(--color-border)]" />
-        <div className="h-48 animate-pulse rounded-lg bg-[var(--color-border)]" />
+        <div className="h-8 w-32 animate-pulse rounded-lg bg-[var(--color-border)]/60" />
+        <div className="h-32 animate-pulse rounded-xl bg-[var(--color-border)]/60" />
+        <div className="h-48 animate-pulse rounded-xl bg-[var(--color-border)]/60" />
+        <div className="h-48 animate-pulse rounded-xl bg-[var(--color-border)]/60" />
       </div>
     );
   }
@@ -83,7 +83,7 @@ export function ProfilePage() {
     <div className="mx-auto max-w-2xl">
       {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
           Profile
         </h1>
         <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
@@ -92,7 +92,7 @@ export function ProfilePage() {
       </div>
 
       {/* User info card */}
-      <div className="mb-6 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+      <div className="mb-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {user?.pictureUrl ? (
@@ -132,7 +132,7 @@ export function ProfilePage() {
 
       <div className="space-y-6">
         {/* Default From Address */}
-        <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text)]">
               <User className="h-4 w-4 text-[var(--color-text-secondary)]" />
@@ -177,7 +177,7 @@ export function ProfilePage() {
         </div>
 
         {/* Default Bank Details */}
-        <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-sm">
           <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text)]">
             <Landmark className="h-4 w-4 text-[var(--color-text-secondary)]" />
             Default Bank Details

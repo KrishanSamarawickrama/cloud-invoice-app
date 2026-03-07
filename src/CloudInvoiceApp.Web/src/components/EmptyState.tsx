@@ -1,4 +1,5 @@
 import { FileText, Plus } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 
 interface EmptyStateProps {
@@ -9,22 +10,34 @@ interface EmptyStateProps {
 export function EmptyState({ onCreateInvoice, hasSearch }: EmptyStateProps) {
   if (hasSearch) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] py-16">
-        <FileText className="h-10 w-10 text-[var(--color-text-muted)] mb-3" />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] py-16 shadow-sm"
+      >
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-accent-light)] mb-4">
+          <FileText className="h-8 w-8 text-[var(--color-text-muted)]" />
+        </div>
         <h3 className="text-base font-medium text-[var(--color-text)]">
           No matching invoices
         </h3>
         <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
           Try adjusting your search term.
         </p>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] py-16">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent-light)] mb-4">
-        <FileText className="h-6 w-6 text-[var(--color-accent)]" />
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+      className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] py-16 shadow-sm"
+    >
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-accent)] shadow-lg mb-4">
+        <FileText className="h-8 w-8 text-white" />
       </div>
       <h3 className="text-base font-medium text-[var(--color-text)]">
         No invoices yet
@@ -36,6 +49,6 @@ export function EmptyState({ onCreateInvoice, hasSearch }: EmptyStateProps) {
         <Plus className="mr-1.5 h-4 w-4" />
         Create Invoice
       </Button>
-    </div>
+    </motion.div>
   );
 }

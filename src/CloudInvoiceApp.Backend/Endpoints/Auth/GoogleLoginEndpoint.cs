@@ -17,7 +17,8 @@ public class GoogleLoginEndpoint(
     IAuditService auditService,
     IOptions<GoogleSettings> googleSettings,
     IOptions<JwtSettings> jwtSettings,
-    IWebHostEnvironment env) : Endpoint<GoogleLoginRequest, AuthResponse>
+    IWebHostEnvironment env,
+    ILogger<GoogleLoginEndpoint> logger) : Endpoint<GoogleLoginRequest, AuthResponse>
 {
     public override void Configure()
     {
@@ -74,6 +75,9 @@ public class GoogleLoginEndpoint(
         await dbContext.SaveChangesAsync(ct);
 
         var accessToken = tokenService.GenerateAccessToken(user);
+
+        logger.LogInformation("Google login for user {UserId} ({Email}). RefreshTokenPrefix={TokenPrefix}",
+            user.Id, user.Email, refreshToken[..8]);
 
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
         await auditService.LogAsync(user.Id, "LOGIN", "User", user.Id,

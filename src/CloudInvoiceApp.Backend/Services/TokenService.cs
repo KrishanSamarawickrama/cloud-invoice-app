@@ -44,6 +44,6 @@ public class TokenService(IOptions<JwtSettings> jwtSettings) : ITokenService
         var randomBytes = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomBytes);
-        return Convert.ToBase64String(randomBytes);
+        return Convert.ToHexString(randomBytes);
     }
 }

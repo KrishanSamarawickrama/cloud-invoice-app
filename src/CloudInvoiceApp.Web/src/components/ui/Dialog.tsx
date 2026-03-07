@@ -14,7 +14,7 @@ export const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
     )}
     {...props}
@@ -33,8 +33,8 @@ export const DialogContent = React.forwardRef<
       onPointerDownOutside={(e) => e.preventDefault()}
       className={cn(
         "fixed left-1/2 top-1/2 z-50 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2",
-        "max-h-[85vh] overflow-y-auto rounded-lg border border-[var(--color-border)]",
-        "bg-[var(--color-surface)] p-6 shadow-lg",
+        "max-h-[85vh] overflow-y-auto rounded-2xl border border-[var(--color-border)]",
+        "bg-[var(--color-surface)] p-7 shadow-2xl",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -72,7 +72,7 @@ export function DialogTitle({
     <DialogPrimitive.Title asChild>
       <h2
         className={cn(
-          "text-lg font-semibold text-[var(--color-text)]",
+          "text-lg font-semibold tracking-tight text-[var(--color-text)]",
           className
         )}
         {...props}
