@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Pencil, Trash2, Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency, formatDate } from "@/lib/formatters";
@@ -17,7 +18,7 @@ export function InvoiceTable({
   onDownload,
 }: InvoiceTableProps) {
   return (
-    <div className="overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
+    <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-[var(--color-border)] bg-[var(--color-background)]">
@@ -39,10 +40,13 @@ export function InvoiceTable({
           </tr>
         </thead>
         <tbody>
-          {invoices.map((invoice) => (
-            <tr
+          {invoices.map((invoice, index) => (
+            <motion.tr
               key={invoice.id}
-              className="border-b border-[var(--color-border)] last:border-b-0 hover:bg-[var(--color-background)] transition-colors"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2, delay: index * 0.03 }}
+              className="border-b border-[var(--color-border)] last:border-b-0 transition-colors hover:bg-[var(--color-accent-light)]/50"
             >
               <td className="px-4 py-3 font-medium text-[var(--color-text)]">
                 {invoice.invoiceNumber}
@@ -54,7 +58,7 @@ export function InvoiceTable({
                 {formatCurrency(invoice.amount)}
               </td>
               <td className="px-4 py-3 text-[var(--color-text-secondary)] max-w-[200px] truncate">
-                {invoice.fileName || "—"}
+                {invoice.fileName || "\u2014"}
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center justify-end gap-1">
@@ -85,7 +89,7 @@ export function InvoiceTable({
                   </Button>
                 </div>
               </td>
-            </tr>
+            </motion.tr>
           ))}
         </tbody>
       </table>

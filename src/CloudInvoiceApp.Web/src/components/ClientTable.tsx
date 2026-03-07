@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { ClientListItem } from "@/services/ApiService";
@@ -10,7 +11,7 @@ interface ClientTableProps {
 
 export function ClientTable({ clients, onEdit, onDelete }: ClientTableProps) {
   return (
-    <div className="overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
+    <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-[var(--color-border)] bg-[var(--color-background)]">
@@ -26,10 +27,13 @@ export function ClientTable({ clients, onEdit, onDelete }: ClientTableProps) {
           </tr>
         </thead>
         <tbody>
-          {clients.map((client) => (
-            <tr
+          {clients.map((client, index) => (
+            <motion.tr
               key={client.id}
-              className="border-b border-[var(--color-border)] last:border-b-0 hover:bg-[var(--color-background)] transition-colors"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2, delay: index * 0.03 }}
+              className="border-b border-[var(--color-border)] last:border-b-0 transition-colors hover:bg-[var(--color-accent-light)]/50"
             >
               <td className="px-4 py-3 font-medium text-[var(--color-text)]">
                 {client.name}
@@ -58,7 +62,7 @@ export function ClientTable({ clients, onEdit, onDelete }: ClientTableProps) {
                   </Button>
                 </div>
               </td>
-            </tr>
+            </motion.tr>
           ))}
         </tbody>
       </table>

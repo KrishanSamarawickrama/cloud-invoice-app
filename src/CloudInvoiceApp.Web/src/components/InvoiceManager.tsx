@@ -100,7 +100,7 @@ export function InvoiceManager() {
       <div className="mb-4 flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
               Invoices
             </h1>
             <Badge>{invoices.length}</Badge>
@@ -123,7 +123,7 @@ export function InvoiceManager() {
           placeholder="Search invoices..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="h-9 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] pl-9 pr-8 text-sm placeholder:text-[var(--color-text-muted)] placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+          className="h-10 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] pl-9 pr-8 text-sm placeholder:text-[var(--color-text-muted)] placeholder:opacity-70 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/30 focus:border-[var(--color-accent)]"
         />
         {searchQuery && (
           <button

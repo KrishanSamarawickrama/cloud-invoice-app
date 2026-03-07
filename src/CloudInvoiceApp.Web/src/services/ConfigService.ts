@@ -4,7 +4,7 @@ export interface AppConfig {
   googleClientId: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5101/api";
 
 export async function getAppConfig(): Promise<AppConfig> {
   const response = await axios.get<AppConfig>(`${API_BASE_URL}/config`);

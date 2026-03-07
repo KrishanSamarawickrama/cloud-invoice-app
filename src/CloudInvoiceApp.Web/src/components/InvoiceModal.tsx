@@ -247,7 +247,7 @@ export function InvoiceModal({
                 Add
               </Button>
             </div>
-            <div className="mt-3 overflow-hidden rounded-md border border-[var(--color-border)]">
+            <div className="mt-3 overflow-hidden rounded-lg border border-[var(--color-border)]">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--color-border)] bg-[var(--color-background)]">
@@ -262,19 +262,20 @@ export function InvoiceModal({
                 </thead>
                 <tbody>
                   {services.map((service, i) => (
-                    <tr key={i} className="border-b border-[var(--color-border)] last:border-b-0">
-                      <td className="px-3 py-2">
+                    <tr key={i} className="border-b border-[var(--color-border)] last:border-b-0 group">
+                      <td className="px-3 py-1.5">
                         <input
-                          className="w-full h-8 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] px-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+                          className="w-full h-8 rounded-md border border-transparent bg-transparent text-[var(--color-text)] px-2 text-sm transition-all duration-200 hover:bg-[var(--color-background)] focus:outline-none focus:bg-[var(--color-surface)] focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/30"
                           placeholder="Service name"
                           value={service.serviceName}
                           onChange={(e) => handleServiceChange(i, "serviceName", e.target.value)}
                         />
                       </td>
-                      <td className="px-3 py-2">
+                      <td className="px-3 py-1.5">
                         <input
-                          className="w-full h-8 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] px-2 text-sm text-right focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+                          className="w-full h-8 rounded-md border border-transparent bg-transparent text-[var(--color-text)] px-2 text-sm text-right transition-all duration-200 hover:bg-[var(--color-background)] focus:outline-none focus:bg-[var(--color-surface)] focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/30"
                           type="number"
+                          step="0.01"
                           placeholder="0.00"
                           value={service.amount || ""}
                           onChange={(e) => handleServiceChange(i, "amount", e.target.value)}
@@ -357,7 +358,7 @@ export function InvoiceModal({
 
 function SectionHeading({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text)]">
+    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-text)] border-b border-[var(--color-border)] pb-2">
       <span className="text-[var(--color-text-secondary)]">{icon}</span>
       {title}
     </div>

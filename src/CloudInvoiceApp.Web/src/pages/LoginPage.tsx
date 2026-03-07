@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { FileText } from "lucide-react";
+import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -15,12 +16,17 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex h-full items-center justify-center bg-[var(--color-background)]">
-      <div className="w-full max-w-sm rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 shadow-sm">
+    <div className="flex h-full items-center justify-center bg-gradient-to-br from-[var(--color-background)] via-[var(--color-accent-light)] to-[var(--color-background)]">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="w-full max-w-sm rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-10 shadow-xl"
+      >
         {/* Branding */}
         <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[var(--color-accent-light)]">
-            <FileText className="h-6 w-6 text-[var(--color-accent)]" />
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-accent)] shadow-lg">
+            <FileText className="h-7 w-7 text-white" />
           </div>
           <h1 className="text-xl font-semibold text-[var(--color-text)]">
             CloudInvoice
@@ -51,7 +57,7 @@ export function LoginPage() {
             text="signin_with"
           />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

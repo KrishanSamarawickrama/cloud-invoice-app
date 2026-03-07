@@ -165,7 +165,7 @@ export function ClientModal({
 
 function SectionHeading({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text)]">
+    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-text)] border-b border-[var(--color-border)] pb-2">
       <span className="text-[var(--color-text-secondary)]">{icon}</span>
       {title}
     </div>

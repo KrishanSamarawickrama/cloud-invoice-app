@@ -90,7 +90,7 @@ export function ClientManager() {
       <div className="mb-4 flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold text-[var(--color-text)]">
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
               Clients
             </h1>
             <Badge>{clients.length}</Badge>
@@ -113,7 +113,7 @@ export function ClientManager() {
           placeholder="Search clients..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="h-9 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] pl-9 pr-8 text-sm placeholder:text-[var(--color-text-muted)] placeholder:opacity-70 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-1"
+          className="h-10 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] pl-9 pr-8 text-sm placeholder:text-[var(--color-text-muted)] placeholder:opacity-70 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/30 focus:border-[var(--color-accent)]"
         />
         {searchQuery && (
           <button
@@ -174,8 +174,10 @@ function ClientEmptyState({
 }) {
   if (hasSearch) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] py-16">
-        <Users className="h-10 w-10 text-[var(--color-text-muted)] mb-3" />
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] py-16 shadow-sm">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-accent-light)] mb-4">
+          <Users className="h-8 w-8 text-[var(--color-text-muted)]" />
+        </div>
         <h3 className="text-base font-medium text-[var(--color-text)]">
           No matching clients
         </h3>
@@ -187,9 +189,9 @@ function ClientEmptyState({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] py-16">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent-light)] mb-4">
-        <Users className="h-6 w-6 text-[var(--color-accent)]" />
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-surface)] py-16 shadow-sm">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-accent)] shadow-lg mb-4">
+        <Users className="h-8 w-8 text-white" />
       </div>
       <h3 className="text-base font-medium text-[var(--color-text)]">
         No clients yet
