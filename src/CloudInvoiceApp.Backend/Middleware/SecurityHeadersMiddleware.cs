@@ -12,9 +12,9 @@ public class SecurityHeadersMiddleware(RequestDelegate next)
         headers["Content-Security-Policy"] =
             "default-src 'self'; " +
             "script-src 'self' https://static.cloudflareinsights.com https://accounts.google.com; " +
-            "style-src 'self' 'unsafe-inline'; " +
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; " +
             "img-src 'self' data: https://lh3.googleusercontent.com; " +
-            "font-src 'self'; " +
+            "font-src 'self' https://fonts.gstatic.com; " +
             "connect-src 'self' https://accounts.google.com https://oauth2.googleapis.com https://cloudflareinsights.com; " +
             "frame-src https://accounts.google.com;";
 

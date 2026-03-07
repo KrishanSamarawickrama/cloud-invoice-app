@@ -4,6 +4,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import type { UserInfo, AuthResponse } from "@/types/auth";
@@ -18,6 +19,9 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+// Module-level dedup — survives StrictMode unmount/remount cycles
+let refreshPromise: Promise<AuthResponse | null> | null = null;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserInfo | null>(null);
@@ -35,14 +39,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshAccessToken = useCallback(async (): Promise<string | null> => {
-    try {
-      const response = await api.post<AuthResponse>("/auth/refresh");
-      handleAuthResponse(response.data);
-      return response.data.accessToken;
-    } catch {
-      clearAuth();
-      return null;
+    if (!refreshPromise) {
+      refreshPromise = api
+        .post<AuthResponse>("/auth/refresh")
+        .then((res) => res.data)
+        .catch(() => null)
+        .finally(() => { refreshPromise = null; });
     }
+
+    const data = await refreshPromise;
+    if (data) {
+      handleAuthResponse(data);
+      return data.accessToken;
+    }
+    clearAuth();
+    return null;
   }, [handleAuthResponse, clearAuth]);
 
   // Configure API interceptors whenever accessToken changes
@@ -64,12 +75,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const loginInProgress = useRef(false);
+
   const loginWithGoogle = useCallback(
     async (credential: string) => {
-      const response = await api.post<AuthResponse>("/auth/google", {
-        credential,
-      });
-      handleAuthResponse(response.data);
+      if (loginInProgress.current) return;
+      loginInProgress.current = true;
+      try {
+        const response = await api.post<AuthResponse>("/auth/google", {
+          credential,
+        });
+        handleAuthResponse(response.data);
+      } finally {
+        loginInProgress.current = false;
+      }
     },
     [handleAuthResponse]
   );

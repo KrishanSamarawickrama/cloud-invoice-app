@@ -7,6 +7,7 @@ using CloudInvoiceApp.Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.HttpOverrides;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 
@@ -77,7 +78,7 @@ builder.Services.AddCors(options =>
             }
             else if (builder.Environment.IsDevelopment())
             {
-                policyBuilder.WithOrigins("http://localhost:5173", "http://localhost:5174");
+                policyBuilder.WithOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:3000");
             }
             else
             {
@@ -128,6 +129,14 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 
+// Forwarded headers — required when running behind a reverse proxy (nginx, Caddy, etc.)
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 // Request body size limit (10 MB)
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -146,6 +155,9 @@ if (builder.Environment.IsDevelopment())
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
+
+// Must be first — translates X-Forwarded-* headers from the reverse proxy
+app.UseForwardedHeaders();
 
 // Warn if CORS origins not configured in production
 if (!app.Environment.IsDevelopment())
@@ -198,7 +210,7 @@ app.UseAuthorization();
 
 RunMigrations(app.Services);
 
-app.MapGet("/api/version", () => Results.Ok(new { Version = "v1.0.1", Tag = "20250224" })).AllowAnonymous();
+app.MapGet("/api/version", () => Results.Ok(new { Version = "v1.1.0", Tag = "20250224" })).AllowAnonymous();
 app.UseFastEndpoints();
 
 if (app.Environment.IsDevelopment())

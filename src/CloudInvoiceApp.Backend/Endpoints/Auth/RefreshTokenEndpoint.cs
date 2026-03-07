@@ -12,7 +12,8 @@ public class RefreshTokenEndpoint(
     InvoiceDbContext dbContext,
     ITokenService tokenService,
     IOptions<JwtSettings> jwtSettings,
-    IWebHostEnvironment env) : EndpointWithoutRequest<AuthResponse>
+    IWebHostEnvironment env,
+    ILogger<RefreshTokenEndpoint> logger) : EndpointWithoutRequest<AuthResponse>
 {
     public override void Configure()
     {
@@ -28,6 +29,8 @@ public class RefreshTokenEndpoint(
 
         if (string.IsNullOrEmpty(refreshToken))
         {
+            logger.LogWarning("Refresh token cookie is missing. Cookies received: {CookieKeys}",
+                string.Join(", ", HttpContext.Request.Cookies.Keys));
             await Send.UnauthorizedAsync(ct);
             return;
         }
@@ -37,6 +40,12 @@ public class RefreshTokenEndpoint(
 
         if (user is null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
         {
+            // Log token prefix for debugging (never log full tokens in production long-term)
+            var tokenPrefix = refreshToken.Length > 8 ? refreshToken[..8] : refreshToken;
+            var allUsers = await dbContext.Users.Select(u => new { u.Id, TokenPrefix = u.RefreshToken != null ? u.RefreshToken.Substring(0, 8) : "null" }).ToListAsync(ct);
+            logger.LogWarning("Refresh token mismatch. CookiePrefix={CookiePrefix}, DbTokens={DbTokens}, UserFound={UserFound}, Expired={Expired}",
+                tokenPrefix, System.Text.Json.JsonSerializer.Serialize(allUsers),
+                user is not null, user?.RefreshTokenExpiryTime < DateTime.UtcNow);
             CookieHelper.ClearRefreshTokenCookie(HttpContext, env.IsDevelopment());
             await Send.UnauthorizedAsync(ct);
             return;

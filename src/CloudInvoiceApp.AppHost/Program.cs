@@ -20,7 +20,16 @@ var backend = builder.AddProject<Projects.CloudInvoiceApp_Backend>("backend")
 var frontend = builder.AddViteApp("frontend", "../CloudInvoiceApp.Web")
     .WithReference(backend)
     .WaitFor(backend)
-    .WithHttpEndpoint(port: 3000, env: "VITE_PORT")
+    .WithEnvironment(context =>
+    {
+        var backendUrl = backend.GetEndpoint("http");
+        context.EnvironmentVariables["VITE_API_BASE_URL"] = ReferenceExpression.Create($"{backendUrl}/api");
+    })
+    .WithEndpoint("http", endpoint =>
+    {
+        endpoint.Port = 3000;
+        endpoint.IsProxied = false;
+    })
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 

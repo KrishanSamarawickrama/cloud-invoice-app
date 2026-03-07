@@ -52,6 +52,7 @@ export function LoginPage() {
             onError={() => {
               toast.error("Google sign-in failed. Please try again.");
             }}
+            auto_select={false}
             size="large"
             width="300"
             text="signin_with"
