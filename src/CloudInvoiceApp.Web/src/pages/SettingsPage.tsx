@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Save, Hash } from "lucide-react";
+import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -64,27 +64,22 @@ export function SettingsPage() {
       </div>
 
       <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-sm">
-        <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text)]">
-          <Hash className="h-4 w-4 text-[var(--color-text-secondary)]" />
-          Invoice Number Prefix
-        </div>
-        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+        <p className="text-xs text-[var(--color-text-muted)] mb-3">
           Used to auto-generate invoice numbers, e.g. <code>{invoiceNumberPrefix || "INV"}-000001</code>. 1–10 letters or digits.
         </p>
-        <div className="mt-3">
-          <Input
-            value={invoiceNumberPrefix}
-            onChange={(e) => {
-              setInvoiceNumberPrefix(e.target.value);
-              if (error) setError(null);
-            }}
-            placeholder="INV"
-            maxLength={10}
-          />
-          {error && (
-            <p className="mt-1 text-xs text-[var(--color-destructive)]">{error}</p>
-          )}
-        </div>
+        <Input
+          label="Invoice Number Prefix"
+          value={invoiceNumberPrefix}
+          onChange={(e) => {
+            setInvoiceNumberPrefix(e.target.value);
+            if (error) setError(null);
+          }}
+          placeholder="INV"
+          maxLength={10}
+        />
+        {error && (
+          <p className="mt-1 text-xs text-[var(--color-destructive)]">{error}</p>
+        )}
       </div>
 
       <div className="mt-6 flex justify-end">
