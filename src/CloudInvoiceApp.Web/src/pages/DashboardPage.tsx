@@ -128,7 +128,10 @@ export function DashboardPage() {
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="min-w-[4ch] text-center text-lg font-semibold text-[var(--color-text)]">
+          <span
+            aria-live="polite"
+            className="min-w-[4ch] text-center text-lg font-semibold text-[var(--color-text)]"
+          >
             {selectedYear}
           </span>
           <Button
