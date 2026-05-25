@@ -56,14 +56,16 @@ function SortHeader({ label, sortKey, active, align = "left", onSort }: SortHead
   const Icon = isActive
     ? (active.dir === "asc" ? ChevronUp : ChevronDown)
     : ChevronsUpDown;
+  const ariaSort = isActive ? (active.dir === "asc" ? "ascending" : "descending") : "none";
   return (
     <th
+      aria-sort={ariaSort}
       className={`px-4 py-3 font-medium text-[var(--color-text-secondary)] ${align === "right" ? "text-right" : "text-left"}`}
     >
       <button
         type="button"
         onClick={() => onSort(sortKey)}
-        className={`group inline-flex items-center gap-1 ${align === "right" ? "flex-row-reverse" : ""} hover:text-[var(--color-text)]`}
+        className={`group inline-flex items-center gap-1 rounded ${align === "right" ? "flex-row-reverse" : ""} hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2`}
       >
         <span>{label}</span>
         <Icon
@@ -132,7 +134,7 @@ export function InvoiceTable({
                   type="button"
                   onClick={() => onEdit(invoice)}
                   aria-label={`Edit invoice ${invoice.invoiceNumber}`}
-                  className="cursor-pointer text-[var(--color-accent)] hover:underline"
+                  className="cursor-pointer rounded text-[var(--color-accent)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
                 >
                   {invoice.invoiceNumber}
                 </button>
