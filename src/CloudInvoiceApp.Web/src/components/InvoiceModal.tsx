@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Plus, Trash2, Download, Building2, User, Briefcase, Landmark } from "lucide-react";
 import {
   Dialog,
@@ -48,10 +49,13 @@ export function InvoiceModal({
   const [swiftCode, setSwiftCode] = useState(initialData?.bankDetails?.swiftCode || "");
   const [fileName, setFileName] = useState(initialData?.fileName ?? "");
   const [isSaving, setIsSaving] = useState(false);
+  const [prefixUnset, setPrefixUnset] = useState(false);
 
-  // Pre-populate from profile defaults when creating a new invoice
+  // Pre-populate from profile defaults + next invoice number when creating
   useEffect(() => {
     if (!open || initialData) return;
+    setPrefixUnset(false);
+
     ApiService.getProfile()
       .then((profile) => {
         if (profile.defaultFromAddress?.length) {
@@ -62,6 +66,16 @@ export function InvoiceModal({
           setBankName(profile.defaultBankDetails.bankName || "");
           setAccountNumber(profile.defaultBankDetails.accountNumber || "");
           setSwiftCode(profile.defaultBankDetails.swiftCode || "");
+        }
+      })
+      .catch(() => {});
+
+    ApiService.getNextInvoiceNumber()
+      .then((next) => {
+        if (next === null) {
+          setPrefixUnset(true);
+        } else {
+          setInvoiceNumber(next);
         }
       })
       .catch(() => {});
@@ -141,12 +155,27 @@ export function InvoiceModal({
           <section>
             <SectionHeading icon={<Briefcase className="h-4 w-4" />} title="Invoice Details" />
             <div className="grid grid-cols-2 gap-4 mt-3">
-              <Input
-                label="Invoice Number"
-                value={invoiceNumber}
-                onChange={(e) => setInvoiceNumber(e.target.value)}
-                placeholder="INV-001"
-              />
+              <div>
+                <Input
+                  label="Invoice Number"
+                  value={invoiceNumber}
+                  onChange={(e) => setInvoiceNumber(e.target.value)}
+                  placeholder="INV-000001"
+                />
+                {prefixUnset && !initialData && (
+                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                    Set your invoice number prefix in{" "}
+                    <Link
+                      to="/settings"
+                      className="text-[var(--color-accent)] hover:underline"
+                      onClick={onClose}
+                    >
+                      Settings
+                    </Link>{" "}
+                    to auto-generate numbers.
+                  </p>
+                )}
+              </div>
               <DatePicker
                 label="Invoice Date"
                 value={invoiceDate}

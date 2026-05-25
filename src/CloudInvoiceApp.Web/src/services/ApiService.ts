@@ -200,6 +200,18 @@ export const ApiService = {
     await api.put(`/invoices`, invoice);
   },
 
+  getNextInvoiceNumber: async (): Promise<string | null> => {
+    try {
+      const response = await api.get(`/invoices/next-number`);
+      return response.data.invoiceNumber as string;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.status === 404) {
+        return null;
+      }
+      throw err;
+    }
+  },
+
   deleteInvoice: async (id: number): Promise<void> => {
     await api.delete(`/invoices/${id}`);
   },
