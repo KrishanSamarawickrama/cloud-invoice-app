@@ -11,6 +11,7 @@ import { InvoicesPage } from "@/pages/InvoicesPage";
 import { ClientsPage } from "@/pages/ClientsPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { ProfilePage } from "@/pages/ProfilePage";
+import { SettingsPage } from "@/pages/SettingsPage";
 import { getAppConfig } from "@/services/ConfigService";
 
 export default function App() {
@@ -55,6 +56,7 @@ export default function App() {
                   <Route path="invoices" element={<InvoicesPage />} />
                   <Route path="clients" element={<ClientsPage />} />
                   <Route path="profile" element={<ProfilePage />} />
+                  <Route path="settings" element={<SettingsPage />} />
                 </Route>
               </Route>
             </Routes>

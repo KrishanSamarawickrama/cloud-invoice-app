@@ -152,6 +152,14 @@ export interface UpdateProfileRequest {
   defaultBankDetails?: BankDetails | null;
 }
 
+export interface SettingsResponse {
+  invoiceNumberPrefix: string | null;
+}
+
+export interface UpdateSettingsRequest {
+  invoiceNumberPrefix: string;
+}
+
 export interface ClientListItem {
   id: number;
   name: string;
@@ -203,6 +211,15 @@ export const ApiService = {
 
   updateProfile: async (profile: UpdateProfileRequest): Promise<void> => {
     await api.put(`/profile`, profile);
+  },
+
+  getSettings: async (): Promise<SettingsResponse> => {
+    const response = await api.get(`/settings`);
+    return response.data;
+  },
+
+  updateSettings: async (req: UpdateSettingsRequest): Promise<void> => {
+    await api.put(`/settings`, req);
   },
 
   getClients: async (): Promise<ClientListItem[]> => {
