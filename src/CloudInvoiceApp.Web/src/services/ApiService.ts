@@ -130,6 +130,7 @@ export interface InvoiceListItem {
   invoiceDate: string;
   amount: number;
   fileName?: string | null;
+  createdDate: string;
 }
 
 export interface InvoiceDetail extends InvoiceListItem {
