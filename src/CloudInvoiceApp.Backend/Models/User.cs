@@ -18,6 +18,10 @@ public sealed class User
     public DateTime? RefreshTokenExpiryTime { get; set; }
     public string? DefaultFromAddress { get; set; }
     public string? DefaultBankDetails { get; set; }
+
+    [MaxLength(10)]
+    public string? InvoiceNumberPrefix { get; set; }
+
     public ICollection<Invoice> Invoices { get; set; } = [];
     public ICollection<Client> Clients { get; set; } = [];
 }

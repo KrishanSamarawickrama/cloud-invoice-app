@@ -17,7 +17,7 @@ namespace CloudInvoiceApp.Backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "10.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -167,6 +167,10 @@ namespace CloudInvoiceApp.Backend.Migrations
                     b.Property<string>("GoogleId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("InvoiceNumberPrefix")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.Property<DateTime>("LastLoginDate")
                         .HasColumnType("timestamp with time zone");
