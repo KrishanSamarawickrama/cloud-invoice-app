@@ -413,3 +413,4 @@ src/CloudInvoiceApp.Web/dist/
 # Claude Code
 CLAUDE.md
 /.claude
+/docs/superpowers
