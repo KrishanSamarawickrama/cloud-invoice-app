@@ -7,7 +7,10 @@ import {
   TrendingUp,
   Calendar,
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { ApiService, type InvoiceListItem } from "@/services/ApiService";
 import { formatCurrency, formatDate } from "@/lib/formatters";
 
@@ -56,6 +59,8 @@ function StatCardSkeleton() {
 export function DashboardPage() {
   const [invoices, setInvoices] = useState<InvoiceListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const currentYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState<number>(currentYear);
 
   useEffect(() => {
     ApiService.getInvoiceList()
@@ -64,41 +69,82 @@ export function DashboardPage() {
       .finally(() => setIsLoading(false));
   }, []);
 
+  const yearBounds = useMemo(() => {
+    if (invoices.length === 0) {
+      return { min: currentYear, max: currentYear };
+    }
+    const years = invoices.map((i) => new Date(i.invoiceDate).getFullYear());
+    return { min: Math.min(...years), max: currentYear };
+  }, [invoices, currentYear]);
+
+  const yearInvoices = useMemo(
+    () =>
+      invoices.filter(
+        (i) => new Date(i.invoiceDate).getFullYear() === selectedYear
+      ),
+    [invoices, selectedYear]
+  );
+
   const stats = useMemo(() => {
-    const totalRevenue = invoices.reduce((sum, inv) => sum + inv.amount, 0);
-    const totalInvoices = invoices.length;
+    const totalRevenue = yearInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+    const totalInvoices = yearInvoices.length;
     const averageInvoice = totalInvoices > 0 ? totalRevenue / totalInvoices : 0;
-
-    const now = new Date();
-    const thisMonthRevenue = invoices
-      .filter((inv) => {
-        const d = new Date(inv.invoiceDate);
-        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-      })
-      .reduce((sum, inv) => sum + inv.amount, 0);
-
-    return { totalRevenue, totalInvoices, averageInvoice, thisMonthRevenue };
-  }, [invoices]);
+    const monthlyAverage = totalRevenue / 12;
+    return { totalRevenue, totalInvoices, averageInvoice, monthlyAverage };
+  }, [yearInvoices]);
 
   const recentInvoices = useMemo(() => {
-    return [...invoices]
+    return [...yearInvoices]
       .sort(
         (a, b) =>
           new Date(b.invoiceDate).getTime() - new Date(a.invoiceDate).getTime()
       )
       .slice(0, 5);
-  }, [invoices]);
+  }, [yearInvoices]);
+
+  const canGoPrev = selectedYear > yearBounds.min;
+  const canGoNext = selectedYear < yearBounds.max;
 
   return (
     <>
-      {/* Page header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
-          Dashboard
-        </h1>
-        <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
-          Overview of your invoicing activity
-        </p>
+      {/* Page header with year navigator */}
+      <div className="mb-6 flex items-end justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)]">
+            Dashboard
+          </h1>
+          <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
+            Overview of your invoicing activity
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSelectedYear((y) => y - 1)}
+            disabled={!canGoPrev}
+            title="Previous year"
+            aria-label="Previous year"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <span
+            aria-live="polite"
+            className="min-w-[4ch] text-center text-lg font-semibold text-[var(--color-text)]"
+          >
+            {selectedYear}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSelectedYear((y) => y + 1)}
+            disabled={!canGoNext}
+            title="Next year"
+            aria-label="Next year"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Stats grid */}
@@ -126,8 +172,8 @@ export function DashboardPage() {
               index={2}
             />
             <StatCard
-              label="This Month"
-              value={formatCurrency(stats.thisMonthRevenue)}
+              label="Monthly Average"
+              value={formatCurrency(stats.monthlyAverage)}
               icon={Calendar}
               index={3}
             />
@@ -139,7 +185,7 @@ export function DashboardPage() {
       <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
         <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
           <h2 className="text-base font-semibold text-[var(--color-text)]">
-            Recent Invoices
+            Recent Invoices · {selectedYear}
           </h2>
           <Link
             to="/invoices"
@@ -162,7 +208,7 @@ export function DashboardPage() {
           </div>
         ) : recentInvoices.length === 0 ? (
           <p className="px-5 py-8 text-center text-sm text-[var(--color-text-muted)]">
-            No invoices yet. Create your first invoice to get started.
+            No invoices in {selectedYear}.
           </p>
         ) : (
           <table className="w-full">

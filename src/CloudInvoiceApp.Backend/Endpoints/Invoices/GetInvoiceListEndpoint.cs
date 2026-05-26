@@ -29,7 +29,8 @@ public class GetInvoiceListEndpoint(InvoiceDbContext dbContext) : EndpointWithou
                 FileName = x.FileName,
                 InvoiceNumber = x.InvoiceNumber,
                 InvoiceDate = x.InvoiceDate,
-                Amount = JsonSerializer.Deserialize<List<Service>>(x.Services)!.Sum(x=>x.Amount)
+                Amount = JsonSerializer.Deserialize<List<Service>>(x.Services)!.Sum(x=>x.Amount),
+                CreatedDate = x.CreatedDate
             });
 
         await Send.OkAsync(invoicesResponse, ct);

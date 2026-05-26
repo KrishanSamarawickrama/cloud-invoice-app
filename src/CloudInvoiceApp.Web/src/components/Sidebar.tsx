@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { FileText, LayoutDashboard, Users, LogOut } from "lucide-react";
+import { FileText, LayoutDashboard, Users, LogOut, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -11,6 +11,7 @@ const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/invoices", label: "Invoices", icon: FileText, showBadge: true },
   { to: "/clients", label: "Clients", icon: Users },
+  { to: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar({ invoiceCount }: SidebarProps) {

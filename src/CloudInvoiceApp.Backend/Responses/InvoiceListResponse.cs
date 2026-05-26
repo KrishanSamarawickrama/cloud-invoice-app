@@ -7,4 +7,5 @@ public class InvoiceListResponse
     public required string InvoiceNumber { get; set; } = "00-000013";
     public required string InvoiceDate { get; set; }
     public double Amount { get; set; }
+    public DateTime CreatedDate { get; set; }
 }
