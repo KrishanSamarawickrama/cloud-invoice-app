@@ -34,6 +34,6 @@ public class UpdateSettingsEndpoint(InvoiceDbContext dbContext, IAuditService au
         await auditService.LogAsync(userId, "UPDATE_SETTINGS", "User", userId,
             new { invoiceNumberPrefix = req.InvoiceNumberPrefix }, ipAddress);
 
-        await Send.OkAsync(ct);
+        await Send.OkAsync(cancellation: ct);
     }
 }

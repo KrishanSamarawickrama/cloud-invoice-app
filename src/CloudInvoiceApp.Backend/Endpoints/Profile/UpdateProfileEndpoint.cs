@@ -39,6 +39,6 @@ public class UpdateProfileEndpoint(InvoiceDbContext dbContext, IAuditService aud
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
         await auditService.LogAsync(userId, "UPDATE_PROFILE", "User", userId, ipAddress: ipAddress);
 
-        await Send.OkAsync(ct);
+        await Send.OkAsync(cancellation: ct);
     }
 }
